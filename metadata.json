@@ -1,0 +1,7 @@
+{
+  "name": "IndiChat Privacy & Security",
+  "description": "The official Privacy, Policy, and Security portal for IndiChat — the next-generation super app for communication, content, and commerce.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
