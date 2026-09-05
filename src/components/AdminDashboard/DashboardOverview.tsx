@@ -1,7 +1,7 @@
 import React from 'react';
 import { ThemeMode, AdminStats, AdminAuditLog, RegistrationLinkConfig, ContactInfo, SocialLinkItem } from '../../types';
 import { usePortal } from '../../context/PortalContext';
-import { Users, Shield, Link2, Share2, Activity, ArrowUpRight, Mail, ExternalLink, Smartphone } from 'lucide-react';
+import { Users, Shield, Link2, Share2, Activity, ArrowUpRight, Mail, ExternalLink, Smartphone, Image as ImageIcon } from 'lucide-react';
 
 interface DashboardOverviewProps {
   theme: ThemeMode;
@@ -22,7 +22,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   socialLinks,
   onNavigateTab,
 }) => {
-  const { apkConfig } = usePortal();
+  const { apkConfig, logoConfig } = usePortal();
   const enabledSocials = socialLinks.filter((s) => s.isEnabled).length;
 
   return (
@@ -150,6 +150,31 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           </div>
 
           <div className="space-y-3 text-xs">
+            <div className="p-3 rounded-xl bg-black/20 dark:bg-black/30 border border-white/5 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
+                  <ImageIcon className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="text-slate-400 block">Website Logo & Branding:</span>
+                  <span className="font-mono-code text-indigo-300 font-semibold">
+                    {logoConfig.logoType === 'image'
+                      ? 'Custom Uploaded Image'
+                      : logoConfig.logoType === 'text'
+                      ? `Monogram (${logoConfig.brandText || 'IndiChat'})`
+                      : `Vector Studio (${logoConfig.iconDesign || 'shield_lock'})`}
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => onNavigateTab('logo')}
+                className="text-indigo-400 hover:underline font-semibold"
+              >
+                Customize
+              </button>
+            </div>
+
             <div className="p-3 rounded-xl bg-black/20 dark:bg-black/30 border border-white/5 flex items-center justify-between">
               <div>
                 <span className="text-slate-400 block">Register Button Target:</span>

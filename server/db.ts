@@ -95,8 +95,8 @@ const initialAdminHash = hashPassword(defaultAdminPassword);
 
 const DEFAULT_DB: DatabaseSchema = {
   contactInfo: {
-    privacyEmail: 'privacy@indichat.com',
-    supportEmail: 'support@indichat.com',
+    privacyEmail: 'IndiChatindilife@gmail.com',
+    supportEmail: 'IndiChatindilife@gmail.com',
     businessEmail: 'business@indichat.com',
     phoneNumber: '+91 98765 43210',
     websiteAddress: 'https://indichat.com',

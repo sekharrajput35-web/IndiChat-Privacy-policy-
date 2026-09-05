@@ -1,0 +1,163 @@
+{
+  "contactInfo": {
+    "privacyEmail": "IndiChatindilife@gmail.com",
+    "supportEmail": "IndiChatindilife@gmail.com",
+    "businessEmail": "business@indichat.com",
+    "phoneNumber": "+91 98765 43210",
+    "websiteAddress": "https://indichat.com",
+    "address": "IndiChat Technologies Inc., Level 4 Cyber Horizon, Tech Hub, Bangalore 560103",
+    "updatedAt": "2026-09-05T12:23:50.916Z"
+  },
+  "registrationLink": {
+    "id": "reg-link-primary",
+    "title": "IndiChat Super App Early Access & Portal",
+    "destinationUrl": "https://indichat.com/join",
+    "isEnabled": false,
+    "description": "Official registration portal for new IndiChat super app community accounts",
+    "openInNewTab": true,
+    "updatedAt": "2026-09-05T12:23:50.916Z"
+  },
+  "socialLinks": [
+    {
+      "id": "soc-instagram",
+      "platform": "instagram",
+      "platformName": "Instagram",
+      "profileUrl": "https://instagram.com/indichatapp",
+      "handle": "@indichatapp",
+      "isEnabled": true,
+      "order": 1,
+      "updatedAt": "2026-09-05T12:23:50.916Z"
+    },
+    {
+      "id": "soc-facebook",
+      "platform": "facebook",
+      "platformName": "Facebook",
+      "profileUrl": "https://facebook.com/indichatapp",
+      "handle": "IndiChat Official",
+      "isEnabled": true,
+      "order": 2,
+      "updatedAt": "2026-09-05T12:23:50.916Z"
+    },
+    {
+      "id": "soc-x",
+      "platform": "x",
+      "platformName": "X (formerly Twitter)",
+      "profileUrl": "https://x.com/indichatapp",
+      "handle": "@indichatapp",
+      "isEnabled": true,
+      "order": 3,
+      "updatedAt": "2026-09-05T12:23:50.916Z"
+    },
+    {
+      "id": "soc-youtube",
+      "platform": "youtube",
+      "platformName": "YouTube",
+      "profileUrl": "https://youtube.com/@indichat",
+      "handle": "@indichat",
+      "isEnabled": true,
+      "order": 4,
+      "updatedAt": "2026-09-05T12:23:50.916Z"
+    },
+    {
+      "id": "soc-telegram",
+      "platform": "telegram",
+      "platformName": "Telegram",
+      "profileUrl": "https://t.me/indichatchannel",
+      "handle": "t.me/indichatchannel",
+      "isEnabled": true,
+      "order": 5,
+      "updatedAt": "2026-09-05T12:23:50.916Z"
+    },
+    {
+      "id": "soc-linkedin",
+      "platform": "linkedin",
+      "platformName": "LinkedIn",
+      "profileUrl": "https://linkedin.com/company/indichat",
+      "handle": "IndiChat Technologies",
+      "isEnabled": true,
+      "order": 6,
+      "updatedAt": "2026-09-05T12:23:50.916Z"
+    },
+    {
+      "id": "soc-whatsapp",
+      "platform": "whatsapp",
+      "platformName": "WhatsApp Channel",
+      "profileUrl": "https://whatsapp.com/channel/indichat",
+      "handle": "IndiChat Verified",
+      "isEnabled": true,
+      "order": 7,
+      "updatedAt": "2026-09-05T12:23:50.916Z"
+    },
+    {
+      "id": "soc-discord",
+      "platform": "discord",
+      "platformName": "Discord",
+      "profileUrl": "https://discord.gg/indichat",
+      "handle": "IndiChat Community",
+      "isEnabled": true,
+      "order": 8,
+      "updatedAt": "2026-09-05T12:23:50.916Z"
+    }
+  ],
+  "settings": {
+    "siteTitle": "IndiChat Privacy & Security",
+    "siteTagline": "Everything You Love. One App You Trust.",
+    "maintenanceMode": false,
+    "allowNewRegistrations": true,
+    "securityBannerText": "End-to-end encrypted chats, reels, live streams and privacy-first commerce",
+    "updatedAt": "2026-09-05T12:23:50.916Z",
+    "logo": {
+      "logoType": "icon",
+      "imageUrl": "",
+      "fileName": "",
+      "fileSizeBytes": 0,
+      "altText": "IndiChat Logo",
+      "brandText": "IndiChat",
+      "taglineText": "Private & Secure Super App",
+      "showBrandText": true,
+      "iconDesign": "shield_lock",
+      "iconGradient": "indigo_pink",
+      "shape": "rounded",
+      "heightPx": 42,
+      "updatedAt": "2026-09-05T12:23:50.845Z"
+    }
+  },
+  "apkConfig": {
+    "id": "apk-release-official",
+    "appName": "IndiChat: Private & Secure Super App",
+    "packageName": "com.indichat.app",
+    "versionName": "v2.4.1",
+    "versionCode": 24,
+    "fileName": "IndiChat-v2.4.1.apk",
+    "fileSizeBytes": 28416480,
+    "fileSizeFormatted": "27.1 MB",
+    "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+    "releaseNotes": "• End-to-end encrypted messaging & crystal audio/video calls\n• Zero-telemetry private reels & ephemeral stories\n• Screenshot-protected media with forward restrictions\n• Ultra-low latency and battery optimization for all Android devices",
+    "downloadUrl": "/api/apk/download",
+    "directDownloadEnabled": true,
+    "displayStatus": "active",
+    "minAndroidVersion": "Android 8.0 (Oreo) or later",
+    "downloadCount": 1420,
+    "uploadedAt": "2026-09-05T12:23:50.916Z",
+    "updatedAt": "2026-09-05T12:23:50.916Z",
+    "sourceType": "uploaded",
+    "externalUrl": ""
+  },
+  "admin": {
+    "email": "abhayraj32803@gmail.com",
+    "username": "admin",
+    "salt": "df6097117de6c5ea7d5b7cfa42896546",
+    "passwordHash": "cd32425cf73ccd8eacc941008cbe58b27aa183cf8231c331f203dcd42c8fdd6c0c6bb040a8991f9a46a365e80057b7e36ae19edde88bb752e6f3cddcce37b669",
+    "updatedAt": "2026-09-05T12:23:50.916Z"
+  },
+  "sessions": {},
+  "users": [],
+  "auditLogs": [
+    {
+      "id": "log-seed-1",
+      "action": "SYSTEM_INITIALIZED",
+      "details": "Secure database initialized with cryptographic salted credential protection.",
+      "timestamp": "2026-09-05T12:23:50.916Z"
+    }
+  ]
+}

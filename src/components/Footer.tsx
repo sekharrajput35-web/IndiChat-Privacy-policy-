@@ -2,6 +2,7 @@ import React from 'react';
 import { Shield, Lock, Heart, Mail, ExternalLink, ArrowUp, ShieldCheck, Phone, Smartphone, Download } from 'lucide-react';
 import { ThemeMode } from '../types';
 import { usePortal } from '../context/PortalContext';
+import { BrandLogo } from './BrandLogo';
 
 interface FooterProps {
   theme: ThemeMode;
@@ -47,24 +48,7 @@ export const Footer: React.FC<FooterProps> = ({ theme, onOpenTerms, onOpenContac
         }`}>
           {/* Brand & Description */}
           <div className="md:col-span-6 space-y-4 text-left">
-            <div className="flex items-center gap-3">
-              <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-pink-500 p-[1.5px] shadow-lg shadow-indigo-500/20">
-                <div
-                  className={`w-full h-full rounded-[10px] flex items-center justify-center ${
-                    theme === 'dark' ? 'bg-[#090d16]' : 'bg-white'
-                  }`}
-                >
-                  <Shield className="w-5 h-5 text-indigo-500" />
-                </div>
-              </div>
-              <span className={`font-display font-bold text-2xl tracking-tight bg-clip-text text-transparent ${
-                theme === 'dark'
-                  ? 'bg-gradient-to-r from-white via-indigo-200 to-pink-300'
-                  : 'bg-gradient-to-r from-slate-900 via-indigo-700 to-pink-600'
-              }`}>
-                IndiChat
-              </span>
-            </div>
+            <BrandLogo size="lg" showTagline={false} />
 
             <p className={`text-sm leading-relaxed max-w-md ${
               theme === 'dark' ? 'text-slate-300' : 'text-slate-600'

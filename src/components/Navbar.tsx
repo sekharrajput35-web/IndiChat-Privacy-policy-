@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ThemeMode } from '../types';
 import { usePortal } from '../context/PortalContext';
+import { BrandLogo } from './BrandLogo';
 import {
   Shield,
   Lock,
@@ -111,45 +112,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               id="nav-brand-logo"
               onClick={handleLogoClick}
-              className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-xl p-1"
+              className="flex items-center group focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-xl p-1"
               aria-label="IndiChat Home"
             >
-              <div className="relative flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-pink-500 p-[1.5px] shadow-lg shadow-indigo-500/25 group-hover:shadow-indigo-500/40 transition-all duration-300 group-hover:scale-105">
-                <div
-                  className={`w-full h-full rounded-[10px] flex items-center justify-center transition-colors ${
-                    theme === 'dark' ? 'bg-[#0b0e17]' : 'bg-white'
-                  }`}
-                >
-                  <div className="relative">
-                    <Shield className="w-5 h-5 text-indigo-400 group-hover:text-indigo-300 transition-colors" />
-                    <Lock className="w-2.5 h-2.5 text-pink-400 absolute top-[5.5px] left-[5px]" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-col text-left min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <span
-                    className={`font-display font-bold text-lg sm:text-xl tracking-tight bg-clip-text text-transparent group-hover:from-indigo-300 group-hover:to-pink-400 transition-all ${
-                      theme === 'dark'
-                        ? 'bg-gradient-to-r from-white via-indigo-200 to-pink-300'
-                        : 'bg-gradient-to-r from-slate-900 via-indigo-700 to-pink-600'
-                    }`}
-                  >
-                    IndiChat
-                  </span>
-                  <span className="px-1.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
-                    Trust
-                  </span>
-                </div>
-                <span
-                  className={`text-[10px] sm:text-[11px] font-medium tracking-wide transition-colors truncate ${
-                    theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
-                  }`}
-                >
-                  Privacy & Security
-                </span>
-              </div>
+              <BrandLogo size="md" showTagline={true} />
             </button>
 
             {/* CENTER: Desktop Quick Section Links */}
@@ -303,19 +269,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Top Bar of Drawer: Title & Close Button */}
             <div>
               <div className="flex items-center justify-between pb-6 border-b border-white/10 dark:border-white/10 mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-pink-500 flex items-center justify-center text-white shadow-md">
-                    <Shield className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-display font-extrabold text-lg tracking-tight">
-                      IndiChat Menu
-                    </h3>
-                    <p className={`text-xs ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
-                      Authentication & Portal Access
-                    </p>
-                  </div>
-                </div>
+                <BrandLogo size="md" showTagline={true} />
 
                 <button
                   id="btn-close-hamburger-menu"

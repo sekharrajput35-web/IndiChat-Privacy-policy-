@@ -10,21 +10,31 @@ import {
   ShieldCheck,
   Layers,
   ChevronRight,
+  Smartphone,
+  Server,
+  Bot,
+  ShieldAlert,
+  Sliders,
+  ArrowRight,
 } from 'lucide-react';
 import { ThemeMode } from '../types';
-import { PRIVACY_POLICY_SECTIONS } from '../data/portalData';
+import { PRIVACY_POLICY_SECTIONS, PRIVACY_POLICY_META } from '../data/portalData';
+import { usePortal } from '../context/PortalContext';
 
 interface PrivacyPolicyAccordionProps {
   theme: ThemeMode;
 }
 
 export const PrivacyPolicyAccordion: React.FC<PrivacyPolicyAccordionProps> = ({ theme }) => {
+  const { contactInfo } = usePortal();
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    intro: true,
-    'content-settings': true,
+    'privacy-commitment': true,
+    'normal-sms': true,
   });
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedEmail, setCopiedEmail] = useState(false);
+
+  const officialEmail = contactInfo.privacyEmail || 'IndiChatindilife@gmail.com';
 
   const toggleSection = (id: string) => {
     setOpenSections((prev) => ({
@@ -44,7 +54,7 @@ export const PrivacyPolicyAccordion: React.FC<PrivacyPolicyAccordionProps> = ({ 
   };
 
   const copyEmail = () => {
-    navigator.clipboard.writeText('privacy@indichat.com');
+    navigator.clipboard.writeText(officialEmail);
     setCopiedEmail(true);
     setTimeout(() => setCopiedEmail(false), 2000);
   };
@@ -53,7 +63,12 @@ export const PrivacyPolicyAccordion: React.FC<PrivacyPolicyAccordionProps> = ({ 
     const matchTitle = sec.title.toLowerCase().includes(searchQuery.toLowerCase());
     const matchSummary = sec.summary.toLowerCase().includes(searchQuery.toLowerCase());
     const matchContent = sec.content.some((c) => c.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchTitle || matchSummary || matchContent;
+    const matchSubsections = sec.subsections?.some(
+      (sub) =>
+        sub.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        sub.body.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    return matchTitle || matchSummary || matchContent || matchSubsections;
   });
 
   return (
@@ -64,10 +79,10 @@ export const PrivacyPolicyAccordion: React.FC<PrivacyPolicyAccordionProps> = ({ 
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Heading */}
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-14 space-y-4">
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12 space-y-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-gradient-to-r from-indigo-500/15 via-purple-500/15 to-pink-500/15 border border-indigo-500/30 text-indigo-600 dark:text-indigo-400 shadow-sm">
             <FileText className="w-3.5 h-3.5" />
-            <span>Formal Legal Documentation</span>
+            <span>Official Policy Document</span>
           </div>
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
             <span className={theme === 'dark' ? 'text-slate-100' : 'text-slate-900'}>IndiChat Privacy </span>
@@ -76,17 +91,49 @@ export const PrivacyPolicyAccordion: React.FC<PrivacyPolicyAccordionProps> = ({ 
             </span>
           </h2>
           <p className={`text-base sm:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
-            A comprehensive, transparent breakdown of how we manage user information, enforce security measures, and
-            support your privacy choices across the super app.
+            IndiChat is a communication and digital services platform designed with privacy, security and user control as core principles.
           </p>
-          <div className={`inline-flex items-center gap-2 text-xs font-mono-code px-3 py-1 rounded-full border ${
+          <div className={`inline-flex flex-wrap items-center justify-center gap-2 text-xs font-mono-code px-4 py-1.5 rounded-full border ${
             theme === 'dark'
-              ? 'bg-white/5 border-white/10 text-slate-400'
-              : 'bg-slate-100 border-slate-200 text-slate-600'
+              ? 'bg-white/5 border-white/10 text-slate-300'
+              : 'bg-slate-100 border-slate-200 text-slate-700 shadow-sm'
           }`}>
-            <span>Effective Date: September 2026</span>
+            <span>Effective Date: {PRIVACY_POLICY_META.effectiveDate}</span>
             <span>·</span>
-            <span>Version 2.4</span>
+            <span>Last Updated: {PRIVACY_POLICY_META.lastUpdated}</span>
+            <span>·</span>
+            <span className="text-indigo-500 dark:text-indigo-400 font-bold">29 Dedicated Sections</span>
+          </div>
+        </div>
+
+        {/* Policy Preamble Card */}
+        <div
+          className={`p-5 sm:p-6 rounded-2xl sm:rounded-3xl border mb-8 ${
+            theme === 'dark'
+              ? 'bg-gradient-to-br from-[#0c1020] to-[#12182d] border-indigo-500/30 shadow-lg shadow-indigo-950/20'
+              : 'bg-gradient-to-br from-indigo-50/70 via-white to-purple-50/50 border-indigo-200 shadow-sm'
+          }`}
+        >
+          <div className="flex items-start gap-3.5">
+            <div className="w-9 h-9 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 mt-0.5">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <div className="space-y-2 text-xs sm:text-sm leading-relaxed">
+              <h3 className={`font-display font-bold text-sm sm:text-base ${
+                theme === 'dark' ? 'text-slate-100' : 'text-slate-900'
+              }`}>
+                Preamble & Legal Acknowledgment
+              </h3>
+              <p className={theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}>
+                IndiChat is a communication and digital services platform designed with privacy, security and user control as core principles.
+              </p>
+              <p className={theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}>
+                This Privacy Policy explains what information IndiChat processes, why it is processed, how it is protected, and what controls are available to you.
+              </p>
+              <p className={`font-semibold ${theme === 'dark' ? 'text-indigo-300' : 'text-indigo-700'}`}>
+                By creating or using an IndiChat account, you acknowledge that you have read and understood this Privacy Policy.
+              </p>
+            </div>
           </div>
         </div>
 
@@ -97,7 +144,7 @@ export const PrivacyPolicyAccordion: React.FC<PrivacyPolicyAccordionProps> = ({ 
             <input
               id="input-policy-search"
               type="text"
-              placeholder="Search policy sections, keywords (e.g. phone, password)..."
+              placeholder="Search 29 policy sections, keywords (e.g. SMS, AI, encryption, deletion)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={`w-full pl-10 pr-4 py-2.5 rounded-xl text-xs font-medium border focus:outline-none focus:ring-2 focus:ring-indigo-500 min-h-[44px] ${
@@ -116,7 +163,7 @@ export const PrivacyPolicyAccordion: React.FC<PrivacyPolicyAccordionProps> = ({ 
                   : 'border-slate-200 bg-white hover:bg-indigo-50 text-slate-700 shadow-sm'
               }`}
             >
-              Expand All
+              Expand All (29)
             </button>
             <button
               onClick={collapseAll}
@@ -135,7 +182,8 @@ export const PrivacyPolicyAccordion: React.FC<PrivacyPolicyAccordionProps> = ({ 
         <div className="space-y-4">
           {filteredSections.map((sec) => {
             const isOpen = !!openSections[sec.id];
-            const isContactSection = sec.id === 'contact';
+            const isContactSection = sec.id === 'contact-us' || sec.number === 28;
+            const isPrivacyByDesignSection = sec.id === 'privacy-by-design' || sec.number === 29;
 
             return (
               <div
@@ -159,7 +207,7 @@ export const PrivacyPolicyAccordion: React.FC<PrivacyPolicyAccordionProps> = ({ 
                 >
                   <div className="flex items-center gap-3 sm:gap-4 min-w-0 pr-1">
                     <div
-                      className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl shrink-0 flex items-center justify-center font-mono-code text-xs font-bold ${
+                      className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl shrink-0 flex items-center justify-center font-mono-code text-xs font-bold ${
                         isOpen
                           ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-md shadow-indigo-500/30'
                           : theme === 'dark'
@@ -167,7 +215,7 @@ export const PrivacyPolicyAccordion: React.FC<PrivacyPolicyAccordionProps> = ({ 
                           : 'bg-indigo-50 text-indigo-700 border border-indigo-100'
                       }`}
                     >
-                      0{sec.number}
+                      {String(sec.number).padStart(2, '0')}
                     </div>
                     <div className="min-w-0 flex-1">
                       <h3 className={`font-display text-base sm:text-lg font-bold leading-snug break-words ${
@@ -205,29 +253,37 @@ export const PrivacyPolicyAccordion: React.FC<PrivacyPolicyAccordionProps> = ({ 
                     }`}
                   >
                     {sec.content.map((paragraph, idx) => (
-                      <p key={idx} className="leading-relaxed text-xs sm:text-sm">
+                      <p
+                        key={idx}
+                        className={`leading-relaxed text-xs sm:text-sm ${
+                          paragraph.startsWith('•')
+                            ? 'pl-3 font-medium text-slate-200 dark:text-slate-200'
+                            : ''
+                        }`}
+                      >
                         {paragraph}
                       </p>
                     ))}
 
                     {/* Subsections if present */}
-                    {sec.subsections && (
-                      <div className={`grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mt-4 pt-4 border-t ${
+                    {sec.subsections && sec.subsections.length > 0 && (
+                      <div className={`grid grid-cols-1 ${sec.subsections.length > 2 ? 'sm:grid-cols-2 lg:grid-cols-3' : 'sm:grid-cols-2'} gap-3 sm:gap-4 mt-4 pt-4 border-t ${
                         theme === 'dark' ? 'border-white/10' : 'border-slate-200'
                       }`}>
                         {sec.subsections.map((sub, sIdx) => (
                           <div
                             key={sIdx}
-                            className={`p-3.5 rounded-xl border space-y-1 ${
+                            className={`p-3.5 rounded-xl border space-y-1.5 ${
                               theme === 'dark'
                                 ? 'border-white/10 bg-white/[0.02]'
                                 : 'border-indigo-100 bg-white shadow-sm'
                             }`}
                           >
-                            <h4 className={`font-display font-semibold text-xs ${
+                            <h4 className={`font-display font-semibold text-xs flex items-center gap-1.5 ${
                               theme === 'dark' ? 'text-indigo-300' : 'text-indigo-700'
                             }`}>
-                              {sub.title}
+                              <ChevronRight className="w-3.5 h-3.5 shrink-0 text-indigo-400" />
+                              <span>{sub.title}</span>
                             </h4>
                             <p className={`text-xs leading-relaxed ${
                               theme === 'dark' ? 'text-slate-400' : 'text-slate-600'
@@ -239,39 +295,140 @@ export const PrivacyPolicyAccordion: React.FC<PrivacyPolicyAccordionProps> = ({ 
                       </div>
                     )}
 
-                    {/* Special Contact Details in Contact Section */}
+                    {/* Section 29 Visual Flow Chart Diagram */}
+                    {isPrivacyByDesignSection && (
+                      <div className={`mt-5 p-4 sm:p-6 rounded-2xl border space-y-4 ${
+                        theme === 'dark'
+                          ? 'bg-black/40 border-indigo-500/30'
+                          : 'bg-indigo-50/70 border-indigo-200'
+                      }`}>
+                        <div className="flex items-center gap-2">
+                          <Layers className="w-4 h-4 text-indigo-400" />
+                          <h4 className={`font-display font-bold text-xs uppercase tracking-wider ${
+                            theme === 'dark' ? 'text-indigo-300' : 'text-indigo-700'
+                          }`}>
+                            Technical Privacy Architecture Flow
+                          </h4>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div className={`p-3 rounded-xl border ${
+                            theme === 'dark' ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'
+                          }`}>
+                            <div className="flex items-center gap-2 text-xs font-semibold text-emerald-400 mb-1">
+                              <Smartphone className="w-3.5 h-3.5" />
+                              <span>Normal SMS ➔ Local Device ➔ Local DB</span>
+                            </div>
+                            <p className="text-[11px] text-slate-400">
+                              Stored exclusively in local Android database under user control. Never uploaded by default.
+                            </p>
+                          </div>
+                          <div className={`p-3 rounded-xl border ${
+                            theme === 'dark' ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'
+                          }`}>
+                            <div className="flex items-center gap-2 text-xs font-semibold text-indigo-400 mb-1">
+                              <Server className="w-3.5 h-3.5" />
+                              <span>Normal SMS ➔ IndiChat Server</span>
+                            </div>
+                            <p className="text-[11px] text-slate-400">
+                              Zero default server upload. SMS traffic bypasses cloud synchronization servers entirely.
+                            </p>
+                          </div>
+                          <div className={`p-3 rounded-xl border ${
+                            theme === 'dark' ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'
+                          }`}>
+                            <div className="flex items-center gap-2 text-xs font-semibold text-purple-400 mb-1">
+                              <Bot className="w-3.5 h-3.5" />
+                              <span>Normal SMS ➔ Online AI</span>
+                            </div>
+                            <p className="text-[11px] text-slate-400">
+                              Not shared with online AI services by default. Clear disclosures required for any online analysis.
+                            </p>
+                          </div>
+                          <div className={`p-3 rounded-xl border ${
+                            theme === 'dark' ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'
+                          }`}>
+                            <div className="flex items-center gap-2 text-xs font-semibold text-blue-400 mb-1">
+                              <ShieldCheck className="w-3.5 h-3.5" />
+                              <span>Private Data ➔ Security & Access</span>
+                            </div>
+                            <p className="text-[11px] text-slate-400">
+                              Strict cryptographic protection in transit (TLS 1.3) and salted derivation at rest.
+                            </p>
+                          </div>
+                          <div className={`p-3 rounded-xl border ${
+                            theme === 'dark' ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'
+                          }`}>
+                            <div className="flex items-center gap-2 text-xs font-semibold text-rose-400 mb-1">
+                              <ShieldAlert className="w-3.5 h-3.5" />
+                              <span>Administrator Boundary</span>
+                            </div>
+                            <p className="text-[11px] text-slate-400">
+                              No unrestricted access. Normal administrative interfaces cannot view local SMS or E2EE content.
+                            </p>
+                          </div>
+                          <div className={`p-3 rounded-xl border ${
+                            theme === 'dark' ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'
+                          }`}>
+                            <div className="flex items-center gap-2 text-xs font-semibold text-amber-400 mb-1">
+                              <Sliders className="w-3.5 h-3.5" />
+                              <span>User Autonomy</span>
+                            </div>
+                            <p className="text-[11px] text-slate-400">
+                              Direct control over app lock, permissions, profile visibility, biometrics, and data deletion.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Dedicated Contact Card in Section 28 */}
                     {isContactSection && (
-                      <div className={`mt-4 p-4 rounded-xl sm:rounded-2xl border flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 ${
+                      <div className={`mt-4 p-4 sm:p-5 rounded-xl sm:rounded-2xl border flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 ${
                         theme === 'dark'
                           ? 'bg-indigo-950/40 border-indigo-500/30'
                           : 'bg-indigo-50/80 border-indigo-200'
                       }`}>
                         <div className="flex items-center gap-3">
-                          <div className="p-2 rounded-xl bg-indigo-500/20 text-indigo-500 shrink-0">
+                          <div className="p-2.5 rounded-xl bg-indigo-500/20 text-indigo-400 shrink-0">
                             <Mail className="w-5 h-5" />
                           </div>
                           <div className="min-w-0">
                             <span className={`text-xs font-mono-code block ${
                               theme === 'dark' ? 'text-indigo-300' : 'text-indigo-700'
                             }`}>
-                              Official Privacy Inquiries:
+                              Privacy & Support Email:
                             </span>
-                            <span className={`font-bold text-xs sm:text-sm font-mono-code break-all ${
-                              theme === 'dark' ? 'text-slate-100' : 'text-slate-900'
-                            }`}>
-                              privacy@indichat.com
-                            </span>
+                            <a
+                              href={`mailto:${officialEmail}`}
+                              className={`font-bold text-xs sm:text-sm font-mono-code break-all hover:underline ${
+                                theme === 'dark' ? 'text-slate-100' : 'text-slate-900'
+                              }`}
+                            >
+                              {officialEmail}
+                            </a>
                           </div>
                         </div>
 
-                        <button
-                          id="btn-copy-privacy-email"
-                          onClick={copyEmail}
-                          className="w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white flex items-center justify-center gap-1.5 transition-all shadow-md shadow-indigo-500/20 min-h-[44px]"
-                        >
-                          {copiedEmail ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                          <span>{copiedEmail ? 'Copied to Clipboard' : 'Copy Email Address'}</span>
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            id="btn-copy-privacy-email"
+                            onClick={copyEmail}
+                            className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white flex items-center justify-center gap-1.5 transition-all shadow-md shadow-indigo-500/20 min-h-[44px]"
+                          >
+                            {copiedEmail ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                            <span>{copiedEmail ? 'Copied' : 'Copy Email'}</span>
+                          </button>
+                          <a
+                            href={`mailto:${officialEmail}?subject=IndiChat%20Privacy%20Inquiry`}
+                            className={`px-4 py-2.5 rounded-xl text-xs font-semibold border flex items-center justify-center min-h-[44px] transition-colors ${
+                              theme === 'dark'
+                                ? 'border-white/10 hover:bg-white/10 text-slate-200'
+                                : 'border-slate-300 hover:bg-white text-slate-700'
+                            }`}
+                          >
+                            Send Email
+                          </a>
+                        </div>
                       </div>
                     )}
                   </div>
