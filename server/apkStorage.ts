@@ -109,6 +109,26 @@ export function ensureDefaultApkFile(fileName: string = 'IndiChat-v2.4.1.apk'): 
   return filePath;
 }
 
+export function computeFileSha256Async(filePath: string): Promise<string> {
+  return new Promise((resolve) => {
+    try {
+      if (!fs.existsSync(filePath)) {
+        return resolve('');
+      }
+      const hash = crypto.createHash('sha256');
+      const stream = fs.createReadStream(filePath, { highWaterMark: 1024 * 1024 }); // 1MB chunks for high-speed I/O
+      stream.on('data', (chunk) => hash.update(chunk));
+      stream.on('end', () => resolve(hash.digest('hex')));
+      stream.on('error', (err) => {
+        console.error('Error computing SHA256 stream:', err);
+        resolve('');
+      });
+    } catch {
+      resolve('');
+    }
+  });
+}
+
 export function computeFileSha256(filePath: string): string {
   try {
     const fileBuffer = fs.readFileSync(filePath);

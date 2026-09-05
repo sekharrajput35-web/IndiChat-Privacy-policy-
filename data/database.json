@@ -144,15 +144,40 @@
     "externalUrl": ""
   },
   "admin": {
-    "email": "abhayraj32803@gmail.com",
-    "username": "admin",
-    "salt": "df6097117de6c5ea7d5b7cfa42896546",
-    "passwordHash": "cd32425cf73ccd8eacc941008cbe58b27aa183cf8231c331f203dcd42c8fdd6c0c6bb040a8991f9a46a365e80057b7e36ae19edde88bb752e6f3cddcce37b669",
-    "updatedAt": "2026-09-05T12:23:50.916Z"
+    "email": "UP74AB4513@indichat.com",
+    "username": "UP74AB4513",
+    "salt": "884fad1ebe0953306c11392745ed4355",
+    "passwordHash": "e926ee48bed86970c451e46b34ec54856cf508e69184cc07d15a59138536a1ebe9ec3193fe19a2a863d93f798613e4096a3a68862371f6948066830eda9afa01",
+    "updatedAt": "2026-09-05T12:35:00.000Z"
   },
-  "sessions": {},
+  "sessions": {
+    "0f9d7cffbf7a0cd01792e21a011bbd36b03f94fc0aea29b10a5817792bc8a0b9": {
+      "token": "0f9d7cffbf7a0cd01792e21a011bbd36b03f94fc0aea29b10a5817792bc8a0b9",
+      "adminEmail": "UP74AB4513",
+      "createdAt": "2026-09-05T12:36:09.692Z",
+      "expiresAt": "2026-09-06T12:36:09.692Z"
+    },
+    "178cec375d05ecb016d352482400ef00bec58c57631247081368d62ba3a2667c": {
+      "token": "178cec375d05ecb016d352482400ef00bec58c57631247081368d62ba3a2667c",
+      "adminEmail": "up74ab4513",
+      "createdAt": "2026-09-05T12:36:17.554Z",
+      "expiresAt": "2026-09-06T12:36:17.554Z"
+    }
+  },
   "users": [],
   "auditLogs": [
+    {
+      "id": "log-1788611777555-qzduj",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin logged in successfully (up74ab4513)",
+      "timestamp": "2026-09-05T12:36:17.555Z"
+    },
+    {
+      "id": "log-1788611769693-gu93c",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin logged in successfully (UP74AB4513)",
+      "timestamp": "2026-09-05T12:36:09.693Z"
+    },
     {
       "id": "log-seed-1",
       "action": "SYSTEM_INITIALIZED",

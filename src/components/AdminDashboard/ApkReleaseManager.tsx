@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { usePortal } from '../../context/PortalContext';
 import { ApkConfig, ApkDisplayStatus } from '../../types';
-import { uploadAdminApkApi, updateAdminApkConfigApi } from '../../services/api';
+import { uploadAdminApkApi, updateAdminApkConfigApi, ApkUploadProgress } from '../../services/api';
 import {
   Smartphone,
   Upload,
@@ -22,6 +22,9 @@ import {
   Hash,
   AlertTriangle,
   Globe,
+  Zap,
+  Clock,
+  XCircle,
 } from 'lucide-react';
 
 export const ApkReleaseManager: React.FC = () => {
@@ -57,6 +60,8 @@ export const ApkReleaseManager: React.FC = () => {
 
   // Operation states
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<ApkUploadProgress | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -139,6 +144,28 @@ export const ApkReleaseManager: React.FC = () => {
     }
   };
 
+  // Cancel ongoing upload
+  const handleCancelUpload = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setIsUploading(false);
+    setUploadProgress(null);
+    setFeedback({ type: 'error', message: 'Upload was cancelled by user.' });
+  };
+
+  // Convert Google Drive share link to direct download link
+  const convertGoogleDriveUrl = (raw: string): string => {
+    const trimmed = raw.trim();
+    // Matches https://drive.google.com/file/d/FILE_ID/... or ?id=FILE_ID
+    const match = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (match && match[1]) {
+      return `https://drive.google.com/uc?export=download&id=${match[1]}`;
+    }
+    return trimmed;
+  };
+
   // Upload APK File Submit
   const handleUploadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -147,7 +174,19 @@ export const ApkReleaseManager: React.FC = () => {
       return;
     }
 
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
     setIsUploading(true);
+    setUploadProgress({
+      percent: 0,
+      loadedBytes: 0,
+      totalBytes: selectedFile.size,
+      formattedLoaded: '0 MB',
+      formattedTotal: (selectedFile.size / (1024 * 1024)).toFixed(1) + ' MB',
+      speedFormatted: 'Initializing...',
+      estimatedSecondsLeft: null,
+    });
     setFeedback(null);
 
     try {
@@ -162,9 +201,17 @@ export const ApkReleaseManager: React.FC = () => {
       formData.append('displayStatus', displayStatus);
       formData.append('directDownloadEnabled', String(displayStatus === 'active'));
 
-      const res = await uploadAdminApkApi(formData);
+      const res = await uploadAdminApkApi(
+        formData,
+        (progress) => {
+          setUploadProgress(progress);
+        },
+        abortController.signal
+      );
+
       setApkConfig(res.apk);
       setSelectedFile(null);
+      setUploadProgress(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
 
       setFeedback({
@@ -176,18 +223,21 @@ export const ApkReleaseManager: React.FC = () => {
       setFeedback({ type: 'error', message });
     } finally {
       setIsUploading(false);
+      abortControllerRef.current = null;
     }
   };
 
   // Save Linked APK URL Submit
   const handleLinkSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanUrl = externalUrl.trim();
+    const rawUrl = externalUrl.trim();
 
-    if (!cleanUrl) {
+    if (!rawUrl) {
       setFeedback({ type: 'error', message: 'Please enter a valid external/hosted APK download URL.' });
       return;
     }
+
+    const cleanUrl = convertGoogleDriveUrl(rawUrl);
 
     if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
       setFeedback({ type: 'error', message: 'APK download URL must start with https:// or http://' });
@@ -586,6 +636,30 @@ export const ApkReleaseManager: React.FC = () => {
         {/* MODE A: UPLOAD APK FILE */}
         {activeSourceTab === 'upload' && (
           <form onSubmit={handleUploadSubmit} className="space-y-6">
+            {/* Speed & Optimization Notice */}
+            <div className="p-3.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-800/40 flex items-start gap-2.5 text-xs text-amber-800 dark:text-amber-200">
+              <Zap className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <p className="font-semibold text-amber-900 dark:text-amber-100">
+                  Network Upload Speed Information
+                </p>
+                <p className="text-[11px] text-amber-800/90 dark:text-amber-200/90 leading-relaxed">
+                  APK upload time directly depends on your current internet provider's upload bandwidth. A 40–80 MB APK may take 30–90 seconds on standard mobile/broadband connections. You can monitor live upload speed and progress in real time below.
+                </p>
+                <p className="text-[11px] font-medium text-emerald-700 dark:text-emerald-300">
+                  ⚡ Want instant 0-second deployment without waiting for file upload? Switch to the{' '}
+                  <button
+                    type="button"
+                    onClick={() => setActiveSourceTab('link')}
+                    className="underline font-bold hover:text-emerald-800 dark:hover:text-emerald-200"
+                  >
+                    "Link APK (External URL)"
+                  </button>{' '}
+                  tab to host on Google Drive or GitHub.
+                </p>
+              </div>
+            </div>
+
             {/* Dropzone */}
             <div
               onDragOver={(e) => {
@@ -594,19 +668,22 @@ export const ApkReleaseManager: React.FC = () => {
               }}
               onDragLeave={() => setDragActive(false)}
               onDrop={handleFileDrop}
-              onClick={() => fileInputRef.current?.click()}
-              className={`relative border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all ${
-                dragActive
-                  ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20'
+              onClick={() => !isUploading && fileInputRef.current?.click()}
+              className={`relative border-2 border-dashed rounded-2xl p-8 text-center transition-all ${
+                isUploading
+                  ? 'border-gray-200 dark:border-gray-800 bg-gray-50/30 dark:bg-gray-800/10 cursor-not-allowed'
+                  : dragActive
+                  ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 cursor-pointer'
                   : selectedFile
-                  ? 'border-emerald-400 bg-emerald-50/30 dark:bg-emerald-950/10'
-                  : 'border-gray-300 dark:border-gray-700 hover:border-emerald-500 dark:hover:border-emerald-500 bg-gray-50/50 dark:bg-gray-800/30'
+                  ? 'border-emerald-400 bg-emerald-50/30 dark:bg-emerald-950/10 cursor-pointer'
+                  : 'border-gray-300 dark:border-gray-700 hover:border-emerald-500 dark:hover:border-emerald-500 bg-gray-50/50 dark:bg-gray-800/30 cursor-pointer'
               }`}
             >
               <input
                 ref={fileInputRef}
                 id="admin-apk-file-input"
                 type="file"
+                disabled={isUploading}
                 accept=".apk,application/vnd.android.package-archive"
                 className="hidden"
                 onChange={handleFileChange}
@@ -623,11 +700,13 @@ export const ApkReleaseManager: React.FC = () => {
                       {selectedFile.name}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      Size: {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • Ready to upload & compute checksum
+                      Size: {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • Ready for high-speed streaming upload
                     </p>
-                    <span className="inline-block mt-2 text-xs font-medium text-emerald-600 dark:text-emerald-400 underline">
-                      Click to choose a different file
-                    </span>
+                    {!isUploading && (
+                      <span className="inline-block mt-2 text-xs font-medium text-emerald-600 dark:text-emerald-400 underline">
+                        Click to choose a different file
+                      </span>
+                    )}
                   </div>
                 ) : (
                   <div>
@@ -635,12 +714,82 @@ export const ApkReleaseManager: React.FC = () => {
                       Click to browse or drag and drop your Android .apk file
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      Supports standard Android .apk builds up to 250 MB
+                      Supports standard Android .apk builds up to 350 MB with streaming SHA-256 verification
                     </p>
                   </div>
                 )}
               </div>
             </div>
+
+            {/* Live Upload Progress Card */}
+            {isUploading && uploadProgress && (
+              <div
+                id="admin-apk-upload-progress-box"
+                className="p-5 rounded-2xl border-2 border-emerald-300 dark:border-emerald-700/80 bg-emerald-50/60 dark:bg-emerald-950/40 shadow-sm space-y-3.5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <RefreshCw className="w-4 h-4 text-emerald-600 dark:text-emerald-400 animate-spin shrink-0" />
+                    <div>
+                      <p className="text-xs font-bold text-gray-900 dark:text-white">
+                        {uploadProgress.percent < 100
+                          ? `Uploading APK (${uploadProgress.percent}%)`
+                          : 'Processing & Verifying SHA-256 Checksum on Server...'}
+                      </p>
+                      <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                        {uploadProgress.percent < 100
+                          ? 'Transferring file data from your browser to the secure container...'
+                          : 'Validating APK integrity package headers and saving release configuration.'}
+                      </p>
+                    </div>
+                  </div>
+                  <span className="font-mono text-base font-extrabold text-emerald-600 dark:text-emerald-400">
+                    {uploadProgress.percent}%
+                  </span>
+                </div>
+
+                {/* Progress Bar */}
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden shadow-inner">
+                  <div
+                    className="bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-400 h-3 rounded-full transition-all duration-300 ease-out"
+                    style={{ width: `${Math.max(2, uploadProgress.percent)}%` }}
+                  />
+                </div>
+
+                {/* Metric Badges */}
+                <div className="flex flex-wrap items-center justify-between text-xs text-gray-600 dark:text-gray-300 gap-2 pt-1 border-t border-emerald-200/50 dark:border-emerald-800/40">
+                  <div className="flex items-center gap-1">
+                    <span className="text-gray-400">Transferred:</span>
+                    <span className="font-semibold text-gray-800 dark:text-gray-200 font-mono">
+                      {uploadProgress.formattedLoaded} / {uploadProgress.formattedTotal}
+                    </span>
+                  </div>
+
+                  {uploadProgress.speedFormatted && (
+                    <div className="flex items-center gap-1 text-emerald-700 dark:text-emerald-300 font-medium">
+                      <Zap className="w-3 h-3 text-emerald-500" />
+                      <span>Speed: {uploadProgress.speedFormatted}</span>
+                    </div>
+                  )}
+
+                  {uploadProgress.estimatedSecondsLeft !== null && uploadProgress.estimatedSecondsLeft > 0 && (
+                    <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
+                      <Clock className="w-3 h-3 text-gray-400" />
+                      <span>ETA: ~{uploadProgress.estimatedSecondsLeft}s</span>
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={handleCancelUpload}
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 ml-auto transition-colors"
+                  >
+                    <XCircle className="w-3.5 h-3.5" />
+                    <span>Cancel</span>
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Version & Metadata Fields */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -717,12 +866,16 @@ export const ApkReleaseManager: React.FC = () => {
               type="submit"
               id="admin-apk-upload-submit-btn"
               disabled={!selectedFile || isUploading}
-              className="w-full py-3 px-5 rounded-xl font-semibold text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-sm"
+              className="w-full py-3.5 px-5 rounded-xl font-semibold text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-sm"
             >
               {isUploading ? (
                 <>
                   <RefreshCw className="w-4 h-4 animate-spin" />
-                  <span>Uploading APK & Generating Checksum...</span>
+                  <span>
+                    {uploadProgress && uploadProgress.percent < 100
+                      ? `Uploading (${uploadProgress.percent}%) • Please wait...`
+                      : 'Verifying Checksum on Server...'}
+                  </span>
                 </>
               ) : (
                 <>
@@ -737,30 +890,43 @@ export const ApkReleaseManager: React.FC = () => {
         {/* MODE B: LINK APK FILE (URL) */}
         {activeSourceTab === 'link' && (
           <form onSubmit={handleLinkSubmit} className="space-y-6">
-            <div className="p-4 rounded-xl bg-indigo-50/60 dark:bg-indigo-950/30 border border-indigo-200/60 dark:border-indigo-800/40 space-y-1">
-              <p className="text-xs font-bold text-indigo-900 dark:text-indigo-300 flex items-center gap-1.5">
-                <Globe className="w-3.5 h-3.5 text-indigo-500" />
-                <span>External or Cloud-Hosted APK Package</span>
-              </p>
+            <div className="p-4 rounded-xl bg-indigo-50/60 dark:bg-indigo-950/30 border border-indigo-200/60 dark:border-indigo-800/40 space-y-2">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-bold text-indigo-900 dark:text-indigo-300 flex items-center gap-1.5">
+                  <Zap className="w-4 h-4 text-indigo-500" />
+                  <span>Fast Zero-Wait Deployment (External / Cloud APK)</span>
+                </p>
+                <span className="text-[11px] px-2 py-0.5 rounded-full font-bold bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300">
+                  Instant 0s Release
+                </span>
+              </div>
               <p className="text-xs text-indigo-800/80 dark:text-indigo-300/80 leading-relaxed">
-                Provide a direct download URL from your CDN, Amazon S3 bucket, Cloudflare R2, Google Drive direct link, or GitHub Releases. When users click "Install APK", they will download directly from this URL.
+                If uploading large APK files takes too long over your internet connection, you can host the APK on <strong>Google Drive, GitHub Releases, Amazon S3, Cloudflare R2, or MediaFire</strong> and paste the link below. Users will download directly with maximum CDN speed!
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                APK Direct Download URL <span className="text-red-500">*</span>
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300">
+                  APK Direct Download URL <span className="text-red-500">*</span>
+                </label>
+                {externalUrl && (externalUrl.includes('drive.google.com') || externalUrl.includes('/file/d/')) && (
+                  <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3" />
+                    Google Drive link detected & auto-optimized for direct download
+                  </span>
+                )}
+              </div>
               <input
                 type="url"
                 required
                 value={externalUrl}
                 onChange={(e) => setExternalUrl(e.target.value)}
-                placeholder="https://cdn.indichat.com/releases/indichat-latest.apk"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none font-mono"
+                placeholder="https://drive.google.com/file/d/XYZ/view OR https://cdn.indichat.com/IndiChat.apk"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none font-mono text-xs"
               />
               <p className="text-[11px] text-gray-400 mt-1">
-                Must be an accessible URL returning the Android package file.
+                Supports Google Drive share links, GitHub Releases, Firebase Storage, Dropbox direct links, or your custom CDN.
               </p>
             </div>
 

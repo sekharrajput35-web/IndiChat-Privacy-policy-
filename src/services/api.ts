@@ -350,25 +350,113 @@ export async function getAdminApkApi(): Promise<ApkConfig> {
   return data.apk;
 }
 
-export async function uploadAdminApkApi(formData: FormData): Promise<{
+export interface ApkUploadProgress {
+  percent: number;
+  loadedBytes: number;
+  totalBytes: number;
+  formattedLoaded: string;
+  formattedTotal: string;
+  speedFormatted: string;
+  estimatedSecondsLeft: number | null;
+}
+
+export function formatTransferBytes(bytes: number): string {
+  if (!bytes || bytes <= 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
+export async function uploadAdminApkApi(
+  formData: FormData,
+  onProgress?: (progress: ApkUploadProgress) => void,
+  abortSignal?: AbortSignal
+): Promise<{
   success: boolean;
   message: string;
   apk: ApkConfig;
 }> {
-  const token = authStorage.getAdminToken();
-  const res = await fetch('/api/admin/apk/upload', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token || ''}`,
-    },
-    body: formData,
-  });
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    const token = authStorage.getAdminToken();
 
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error(data.error || 'Failed to upload APK file');
-  }
-  return data;
+    const startTime = Date.now();
+    let lastTime = startTime;
+    let lastLoaded = 0;
+
+    if (xhr.upload && onProgress) {
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable && event.total > 0) {
+          const now = Date.now();
+          const timeElapsed = (now - startTime) / 1000;
+          const timeDiff = (now - lastTime) / 1000;
+
+          let speed = 0;
+          if (timeDiff > 0.25) {
+            speed = Math.max(0, (event.loaded - lastLoaded) / timeDiff);
+            lastLoaded = event.loaded;
+            lastTime = now;
+          } else if (timeElapsed > 0.5) {
+            speed = event.loaded / timeElapsed;
+          }
+
+          const percent = Math.min(100, Math.round((event.loaded / event.total) * 100));
+          const remainingBytes = Math.max(0, event.total - event.loaded);
+          const estimatedSecondsLeft = speed > 0 ? Math.round(remainingBytes / speed) : null;
+          const speedFormatted = speed > 0 ? `${formatTransferBytes(speed)}/s` : 'Calculating...';
+
+          onProgress({
+            percent,
+            loadedBytes: event.loaded,
+            totalBytes: event.total,
+            formattedLoaded: formatTransferBytes(event.loaded),
+            formattedTotal: formatTransferBytes(event.total),
+            speedFormatted,
+            estimatedSecondsLeft,
+          });
+        }
+      };
+    }
+
+    xhr.open('POST', '/api/admin/apk/upload');
+    if (token) {
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+    }
+
+    if (abortSignal) {
+      abortSignal.addEventListener('abort', () => {
+        xhr.abort();
+        reject(new Error('APK upload was cancelled.'));
+      });
+    }
+
+    xhr.onload = () => {
+      try {
+        const data = JSON.parse(xhr.responseText || '{}');
+        if (xhr.status >= 200 && xhr.status < 300) {
+          resolve(data);
+        } else {
+          reject(new Error(data.error || `Upload failed with HTTP ${xhr.status}`));
+        }
+      } catch {
+        reject(new Error(xhr.responseText || `Upload failed with HTTP ${xhr.status}`));
+      }
+    };
+
+    xhr.onerror = () => {
+      reject(new Error('Network error during upload. Please check your internet connection and try again.'));
+    };
+
+    xhr.ontimeout = () => {
+      reject(new Error('Upload request timed out after 10 minutes. If your network speed is slow, please use the Instant Cloud Link tab.'));
+    };
+
+    // 10 minutes timeout
+    xhr.timeout = 600000;
+
+    xhr.send(formData);
+  });
 }
 
 export async function updateAdminApkConfigApi(updates: Partial<ApkConfig>): Promise<ApkConfig> {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ThemeMode } from '../types';
 import { loginAdminApi, authStorage } from '../services/api';
-import { ShieldCheck, ShieldAlert, Lock, Eye, EyeOff, UserCheck, ArrowLeft, ArrowRight, KeyRound, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, ShieldAlert, Lock, Eye, EyeOff, UserCheck, ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 interface AdminLoginProps {
   theme: ThemeMode;
@@ -161,7 +161,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
                 autoComplete="username"
                 value={usernameOrEmail}
                 onChange={(e) => setUsernameOrEmail(e.target.value)}
-                placeholder="admin@indichat.com or admin"
+                placeholder="Enter Administrator ID or Username"
                 className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors ${
                   theme === 'dark'
                     ? 'bg-[#07090e] border-white/10 text-white placeholder:text-slate-500'
@@ -192,7 +192,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter authorized administrator password"
+                placeholder="••••••••••••••••"
                 className={`w-full pl-10 pr-11 py-3 rounded-xl border text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors ${
                   theme === 'dark'
                     ? 'bg-[#07090e] border-white/10 text-white placeholder:text-slate-500'
@@ -210,19 +210,6 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
-          </div>
-
-          {/* Credentials Helper hint for administrator */}
-          <div className="p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-[11px] text-indigo-400 space-y-1">
-            <div className="font-semibold flex items-center gap-1.5">
-              <KeyRound className="w-3.5 h-3.5" />
-              <span>Authorized Administrator Credentials</span>
-            </div>
-            <p className="text-slate-400">
-              Username: <span className="font-mono-code text-indigo-300">admin@indichat.com</span>
-              <br />
-              Password: <span className="font-mono-code text-indigo-300">Admin@IndiChat2026!</span>
-            </p>
           </div>
 
           {/* Secure Login Button */}

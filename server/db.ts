@@ -89,8 +89,9 @@ export function verifyPassword(password: string, salt: string, storedHash: strin
 }
 
 // Initial default seed
-const defaultAdminEmail = process.env.ADMIN_EMAIL || 'admin@indichat.com';
-const defaultAdminPassword = process.env.ADMIN_PASSWORD || 'Admin@IndiChat2026!';
+const defaultAdminEmail = process.env.ADMIN_EMAIL || 'UP74AB4513@indichat.com';
+const defaultAdminUsername = process.env.ADMIN_USERNAME || 'UP74AB4513';
+const defaultAdminPassword = process.env.ADMIN_PASSWORD || 'Abhayraj@4513';
 const initialAdminHash = hashPassword(defaultAdminPassword);
 
 const DEFAULT_DB: DatabaseSchema = {
@@ -226,7 +227,7 @@ const DEFAULT_DB: DatabaseSchema = {
   },
   admin: {
     email: defaultAdminEmail,
-    username: 'admin',
+    username: defaultAdminUsername,
     salt: initialAdminHash.salt,
     passwordHash: initialAdminHash.hash,
     updatedAt: new Date().toISOString(),

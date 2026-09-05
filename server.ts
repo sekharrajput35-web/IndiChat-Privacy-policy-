@@ -6,10 +6,14 @@ import { createServer as createViteServer } from 'vite';
 import { dbManager } from './server/db';
 import {
   ensureDefaultApkFile,
+  ensureApkDirectory,
   APK_STORAGE_DIR,
   formatBytes,
   computeFileSha256,
+  computeFileSha256Async,
 } from './server/apkStorage';
+import { requireAuth, AuthRequest } from './src/middleware/auth.ts';
+import { getOrCreateUser, getUsers } from './src/db/users.ts';
 
 interface AuthenticatedRequest extends Request {
   adminSession?: {
@@ -27,7 +31,7 @@ ensureDefaultApkFile('IndiChat-v2.4.1.apk');
 // Configure Multer storage for uploaded APK files
 const apkUploadStorage = multer.diskStorage({
   destination: (_req, _file, cb) => {
-    ensureDefaultApkFile();
+    ensureApkDirectory();
     cb(null, APK_STORAGE_DIR);
   },
   filename: (_req, file, cb) => {
@@ -39,7 +43,7 @@ const apkUploadStorage = multer.diskStorage({
 
 const uploadApkMiddleware = multer({
   storage: apkUploadStorage,
-  limits: { fileSize: 250 * 1024 * 1024 }, // 250 MB
+  limits: { fileSize: 350 * 1024 * 1024 }, // 350 MB max limit
 });
 
 // Configure Multer storage for uploaded Logo images
@@ -88,8 +92,49 @@ async function startServer() {
     res.json({
       status: 'ok',
       service: 'IndiChat Secure Backend',
+      database: 'Cloud SQL (PostgreSQL)',
+      region: 'asia-southeast1',
       timestamp: new Date().toISOString(),
     });
+  });
+
+  // --- FIREBASE AUTH & CLOUD SQL SYNC ENDPOINTS ---
+  app.post('/api/auth/sync', requireAuth, async (req: AuthRequest, res: Response) => {
+    try {
+      if (!req.user || !req.user.uid || !req.user.email) {
+        res.status(400).json({ error: 'Invalid user token payload' });
+        return;
+      }
+      const user = await getOrCreateUser(
+        req.user.uid,
+        req.user.email,
+        (req.user.name as string) || undefined,
+        (req.user.picture as string) || undefined
+      );
+      res.json({ success: true, user });
+    } catch (err: any) {
+      console.error('Failed to synchronize user in Cloud SQL:', err);
+      res.status(500).json({ error: 'Failed to synchronize user record' });
+    }
+  });
+
+  app.get('/api/users/me', requireAuth, async (req: AuthRequest, res: Response) => {
+    try {
+      if (!req.user || !req.user.uid || !req.user.email) {
+        res.status(400).json({ error: 'Invalid user token payload' });
+        return;
+      }
+      const user = await getOrCreateUser(
+        req.user.uid,
+        req.user.email,
+        (req.user.name as string) || undefined,
+        (req.user.picture as string) || undefined
+      );
+      res.json({ success: true, user });
+    } catch (err: any) {
+      console.error('Failed to get user profile from Cloud SQL:', err);
+      res.status(500).json({ error: 'Failed to retrieve profile' });
+    }
   });
 
   // --- PUBLIC API ENDPOINTS ---
@@ -637,7 +682,7 @@ async function startServer() {
     '/api/admin/apk/upload',
     requireAdminAuth,
     uploadApkMiddleware.single('apkFile'),
-    (req: AuthenticatedRequest, res: Response) => {
+    async (req: AuthenticatedRequest, res: Response) => {
       try {
         if (!req.file) {
           res.status(400).json({ error: 'Please select a valid .apk file to upload.' });
@@ -645,7 +690,7 @@ async function startServer() {
         }
 
         const adminEmail = req.adminSession?.adminEmail || 'admin';
-        const sha256 = computeFileSha256(req.file.path);
+        const sha256 = await computeFileSha256Async(req.file.path);
         const fileSizeBytes = req.file.size;
         const fileSizeFormatted = formatBytes(fileSizeBytes);
 
@@ -824,9 +869,14 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
+  const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`[IndiChat Server] Running on http://localhost:${PORT}`);
   });
+
+  // Keep connections alive and allow up to 10 minutes for large APK file uploads
+  server.keepAliveTimeout = 120000;
+  server.headersTimeout = 125000;
+  server.requestTimeout = 600000;
 }
 
 startServer();
