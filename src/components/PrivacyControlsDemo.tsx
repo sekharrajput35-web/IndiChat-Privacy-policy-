@@ -35,30 +35,25 @@ export const PrivacyControlsDemo: React.FC<PrivacyControlsDemoProps> = ({ theme 
     <section id="privacy-controls" className="py-24 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Heading */}
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-pink-500/10 border border-pink-500/25 text-pink-400">
-            <Shield className="w-3.5 h-3.5" />
-            <span>Empowered Autonomy</span>
-          </div>
-          <h2 className="font-display text-3xl sm:text-5xl font-extrabold tracking-tight">
+        <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
             <span className={theme === 'dark' ? 'text-slate-100' : 'text-slate-900'}>You Decide Who Sees </span>
             <span className="bg-gradient-to-r from-pink-400 via-purple-300 to-indigo-400 bg-clip-text text-transparent">
               Your Content
             </span>
           </h2>
           <p className={`text-base sm:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
-            IndiChat provides intuitive privacy controls for supported content and features. Whether sharing a reel,
-            broadcasting live, or posting on your profile, your audience is always your decision.
+            Simple privacy controls for your posts, reels, and profile. You choose your audience every time.
           </p>
         </div>
 
         {/* 3 Option Selector Tabs */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10 max-w-4xl mx-auto">
           {/* Option 1: PUBLIC */}
           <button
             id="privacy-option-public"
             onClick={() => setSelectedMode('public')}
-            className={`relative p-6 rounded-2xl border text-left transition-all duration-300 flex flex-col justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 active:scale-[0.99] ${
+            className={`relative p-5 sm:p-6 rounded-2xl border text-left transition-all duration-300 flex flex-col justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 active:scale-[0.99] ${
               selectedMode === 'public'
                 ? theme === 'dark'
                   ? 'bg-gradient-to-b from-indigo-950/60 to-blue-950/60 border-indigo-400 shadow-xl shadow-indigo-500/20 scale-[1.02]'
@@ -74,24 +69,19 @@ export const PrivacyControlsDemo: React.FC<PrivacyControlsDemoProps> = ({ theme 
                   <Globe className="w-6 h-6" />
                 </div>
                 {selectedMode === 'public' && (
-                  <span className="flex items-center gap-1 text-[11px] font-mono-code font-bold uppercase text-indigo-600 dark:text-indigo-300 bg-indigo-500/20 px-2.5 py-0.5 rounded-full border border-indigo-500/30">
-                    <Check className="w-3 h-3" /> Active View
+                  <span className="flex items-center gap-1 text-[11px] font-semibold text-indigo-600 dark:text-indigo-300 bg-indigo-500/20 px-2.5 py-0.5 rounded-full border border-indigo-500/30">
+                    <Check className="w-3 h-3" /> Selected
                   </span>
                 )}
               </div>
-              <h3 className={`font-display text-xl font-bold mb-2 ${
+              <h3 className={`font-display text-xl font-bold mb-1.5 ${
                 theme === 'dark' ? 'text-slate-100' : 'text-slate-900'
               }`}>
-                PUBLIC
+                Public
               </h3>
               <p className={`text-xs sm:text-sm leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
-                Content visibility follows the platform's public visibility rules.
+                Visible to anyone on IndiChat. Recommended for public creators and open discussions.
               </p>
-            </div>
-            <div className={`mt-4 pt-3 border-t text-[11px] font-mono-code text-indigo-600 dark:text-indigo-400 font-semibold ${
-              theme === 'dark' ? 'border-white/10' : 'border-indigo-100'
-            }`}>
-              Discoverable in feeds & global search
             </div>
           </button>
 
@@ -99,7 +89,7 @@ export const PrivacyControlsDemo: React.FC<PrivacyControlsDemoProps> = ({ theme 
           <button
             id="privacy-option-private"
             onClick={() => setSelectedMode('private')}
-            className={`relative p-6 rounded-2xl border text-left transition-all duration-300 flex flex-col justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 active:scale-[0.99] ${
+            className={`relative p-5 sm:p-6 rounded-2xl border text-left transition-all duration-300 flex flex-col justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 active:scale-[0.99] ${
               selectedMode === 'private'
                 ? theme === 'dark'
                   ? 'bg-gradient-to-b from-pink-950/60 to-purple-950/60 border-pink-400 shadow-xl shadow-pink-500/20 scale-[1.02]'
@@ -115,25 +105,19 @@ export const PrivacyControlsDemo: React.FC<PrivacyControlsDemoProps> = ({ theme 
                   <Lock className="w-6 h-6" />
                 </div>
                 {selectedMode === 'private' && (
-                  <span className="flex items-center gap-1 text-[11px] font-mono-code font-bold uppercase text-pink-600 dark:text-pink-300 bg-pink-500/20 px-2.5 py-0.5 rounded-full border border-pink-500/30">
-                    <Check className="w-3 h-3" /> Active View
+                  <span className="flex items-center gap-1 text-[11px] font-semibold text-pink-600 dark:text-pink-300 bg-pink-500/20 px-2.5 py-0.5 rounded-full border border-pink-500/30">
+                    <Check className="w-3 h-3" /> Selected
                   </span>
                 )}
               </div>
-              <h3 className={`font-display text-xl font-bold mb-2 ${
+              <h3 className={`font-display text-xl font-bold mb-1.5 ${
                 theme === 'dark' ? 'text-slate-100' : 'text-slate-900'
               }`}>
-                PRIVATE
+                Private
               </h3>
               <p className={`text-xs sm:text-sm leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
-                When a user selects Private mode for supported content or features, that content is not publicly visible
-                and access is restricted according to the user's selected privacy settings and authorized service operations.
+                Only visible to you and people you approve. Hidden from search and public feeds.
               </p>
-            </div>
-            <div className={`mt-4 pt-3 border-t text-[11px] font-mono-code text-pink-600 dark:text-pink-400 font-semibold ${
-              theme === 'dark' ? 'border-white/10' : 'border-pink-100'
-            }`}>
-              High-isolation restricted perimeter
             </div>
           </button>
 
@@ -141,7 +125,7 @@ export const PrivacyControlsDemo: React.FC<PrivacyControlsDemoProps> = ({ theme 
           <button
             id="privacy-option-custom"
             onClick={() => setSelectedMode('custom')}
-            className={`relative p-6 rounded-2xl border text-left transition-all duration-300 flex flex-col justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 active:scale-[0.99] ${
+            className={`relative p-5 sm:p-6 rounded-2xl border text-left transition-all duration-300 flex flex-col justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 active:scale-[0.99] ${
               selectedMode === 'custom'
                 ? theme === 'dark'
                   ? 'bg-gradient-to-b from-purple-950/60 to-indigo-950/60 border-purple-400 shadow-xl shadow-purple-500/20 scale-[1.02]'
@@ -157,24 +141,19 @@ export const PrivacyControlsDemo: React.FC<PrivacyControlsDemoProps> = ({ theme 
                   <Settings className="w-6 h-6" />
                 </div>
                 {selectedMode === 'custom' && (
-                  <span className="flex items-center gap-1 text-[11px] font-mono-code font-bold uppercase text-purple-600 dark:text-purple-300 bg-purple-500/20 px-2.5 py-0.5 rounded-full border border-purple-500/30">
-                    <Check className="w-3 h-3" /> Active View
+                  <span className="flex items-center gap-1 text-[11px] font-semibold text-purple-600 dark:text-purple-300 bg-purple-500/20 px-2.5 py-0.5 rounded-full border border-purple-500/30">
+                    <Check className="w-3 h-3" /> Selected
                   </span>
                 )}
               </div>
-              <h3 className={`font-display text-xl font-bold mb-2 ${
+              <h3 className={`font-display text-xl font-bold mb-1.5 ${
                 theme === 'dark' ? 'text-slate-100' : 'text-slate-900'
               }`}>
-                CUSTOM
+                Custom
               </h3>
               <p className={`text-xs sm:text-sm leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
-                Users can choose supported visibility and privacy preferences.
+                Fine-tune who can view, comment, share, or direct-message your content.
               </p>
-            </div>
-            <div className={`mt-4 pt-3 border-t text-[11px] font-mono-code text-purple-600 dark:text-purple-400 font-semibold ${
-              theme === 'dark' ? 'border-white/10' : 'border-purple-100'
-            }`}>
-              Fine-grained audience & interaction controls
             </div>
           </button>
         </div>
@@ -188,19 +167,16 @@ export const PrivacyControlsDemo: React.FC<PrivacyControlsDemoProps> = ({ theme 
           }`}
         >
           {/* Top Demo Bar */}
-          <div className={`flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b gap-2.5 mb-8 ${
+          <div className={`flex items-center justify-between pb-5 border-b mb-6 ${
             theme === 'dark' ? 'border-white/10' : 'border-slate-200'
           }`}>
-            <div className="flex items-center gap-2.5">
-              <div className="w-3 h-3 rounded-full bg-pink-500 animate-ping flex-shrink-0" />
-              <span className={`font-mono-code text-[11px] sm:text-xs uppercase tracking-wider ${
-                theme === 'dark' ? 'text-slate-300' : 'text-slate-600 font-semibold'
-              }`}>
-                Interactive Simulator · Super App Reel & Post Engine
-              </span>
-            </div>
-            <span className="text-xs font-mono-code text-indigo-400 font-semibold uppercase">
-              Current Mode: <span className="text-pink-400">{selectedMode}</span>
+            <span className={`text-xs font-semibold ${
+              theme === 'dark' ? 'text-slate-300' : 'text-slate-700'
+            }`}>
+              Live Preview
+            </span>
+            <span className="text-xs font-semibold text-indigo-500 capitalize">
+              Mode: {selectedMode}
             </span>
           </div>
 

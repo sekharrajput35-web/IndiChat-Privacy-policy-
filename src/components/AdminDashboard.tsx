@@ -29,10 +29,12 @@ import {
   Sparkles,
   Smartphone,
   Image as ImageIcon,
+  TrendingUp,
 } from 'lucide-react';
 
 // Subcomponents
 import { DashboardOverview } from './AdminDashboard/DashboardOverview';
+import { AdminAnalyticsChart } from './AdminDashboard/AdminAnalyticsChart';
 import { ApkReleaseManager } from './AdminDashboard/ApkReleaseManager';
 import { LogoManager } from './AdminDashboard/LogoManager';
 import { WebsiteLinksManager } from './AdminDashboard/WebsiteLinksManager';
@@ -52,6 +54,7 @@ interface AdminDashboardProps {
 
 type AdminTab =
   | 'dashboard'
+  | 'analytics'
   | 'logo'
   | 'apk'
   | 'links'
@@ -154,6 +157,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'analytics', label: 'Analytics & Growth', icon: TrendingUp },
     { id: 'logo', label: 'Logo & Branding', icon: ImageIcon },
     { id: 'apk', label: 'APK Management', icon: Smartphone },
     { id: 'links', label: 'Website Links', icon: Globe },
@@ -403,6 +407,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               socialLinks={socialLinks}
               onNavigateTab={(tab) => setActiveTab(tab as AdminTab)}
             />
+          )}
+
+          {activeTab === 'analytics' && (
+            <div className="space-y-6">
+              <AdminAnalyticsChart
+                theme={theme}
+                initialRange="30d"
+                onNavigateTab={(tab) => setActiveTab(tab as AdminTab)}
+              />
+            </div>
           )}
 
           {activeTab === 'logo' && <LogoManager theme={theme} />}

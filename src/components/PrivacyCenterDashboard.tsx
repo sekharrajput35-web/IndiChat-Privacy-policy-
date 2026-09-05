@@ -60,20 +60,15 @@ export const PrivacyCenterDashboard: React.FC<PrivacyCenterDashboardProps> = ({ 
     <section id="privacy-center" className="py-24 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Heading */}
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-indigo-500/10 border border-indigo-500/25 text-indigo-400">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Interactive Command Center</span>
-          </div>
-          <h2 className="font-display text-3xl sm:text-5xl font-extrabold tracking-tight">
+        <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
             <span className={theme === 'dark' ? 'text-slate-100' : 'text-slate-900'}>Your Privacy </span>
             <span className="bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400 bg-clip-text text-transparent">
               Center
             </span>
           </h2>
           <p className={`text-base sm:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
-            A centralized dashboard to configure settings, inspect account defenses, review data flows, and exercise
-            your privacy rights.
+            Configure your preferences, inspect account defenses, and manage your personal data.
           </p>
         </div>
 
@@ -92,7 +87,7 @@ export const PrivacyCenterDashboard: React.FC<PrivacyCenterDashboardProps> = ({ 
               theme === 'dark'
                 ? 'bg-[#0d1220]/90 border-white/10 hover:border-purple-500/50 hover:bg-[#12182b]'
                 : 'bg-white border-slate-200 shadow-md shadow-slate-200/50 hover:border-purple-400 hover:shadow-xl'
-            } hover:-translate-y-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500`}
+            } hover:-translate-y-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500`}
           >
             <div>
               <div className="w-12 h-12 rounded-xl flex items-center justify-center p-0.5 bg-gradient-to-tr from-purple-500 to-indigo-500 shadow-md mb-5">
@@ -107,18 +102,17 @@ export const PrivacyCenterDashboard: React.FC<PrivacyCenterDashboardProps> = ({ 
               <h3 className={`font-display text-xl font-bold group-hover:text-purple-400 transition-colors mb-2 ${
                 theme === 'dark' ? 'text-slate-100' : 'text-slate-900'
               }`}>
-                PRIVACY SETTINGS
+                Privacy Settings
               </h3>
               <p className={`text-sm leading-relaxed mb-4 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
-                Click to open an interactive simulation of IndiChat privacy toggles, advertising personalization
-                filters, and activity visibility controls.
+                Control advertising preferences, activity indicators, read receipts, and discoverability.
               </p>
             </div>
             <div className={`pt-4 border-t flex items-center justify-between text-xs font-semibold text-purple-400 ${
               theme === 'dark' ? 'border-white/10' : 'border-slate-100'
             }`}>
-              <span>Open Preference Demo</span>
-              <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+              <span>Open settings</span>
+              <ArrowRight className="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" />
             </div>
           </div>
 
@@ -135,7 +129,7 @@ export const PrivacyCenterDashboard: React.FC<PrivacyCenterDashboardProps> = ({ 
               theme === 'dark'
                 ? 'bg-[#0d1220]/90 border-white/10 hover:border-indigo-500/50 hover:bg-[#12182b]'
                 : 'bg-white border-slate-200 shadow-md shadow-slate-200/50 hover:border-indigo-400 hover:shadow-xl'
-            } hover:-translate-y-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500`}
+            } hover:-translate-y-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500`}
           >
             <div>
               <div className="w-12 h-12 rounded-xl flex items-center justify-center p-0.5 bg-gradient-to-tr from-indigo-500 to-blue-500 shadow-md mb-5">
@@ -150,18 +144,17 @@ export const PrivacyCenterDashboard: React.FC<PrivacyCenterDashboardProps> = ({ 
               <h3 className={`font-display text-xl font-bold group-hover:text-indigo-400 transition-colors mb-2 ${
                 theme === 'dark' ? 'text-slate-100' : 'text-slate-900'
               }`}>
-                ACCOUNT SECURITY
+                Account Security
               </h3>
               <p className={`text-sm leading-relaxed mb-4 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
-                Explore cryptographic protection, live session monitoring, multi-factor login checks, and defense against
-                unauthorized access.
+                Learn about end-to-end encryption, multi-factor verification, and session protections.
               </p>
             </div>
             <div className={`pt-4 border-t flex items-center justify-between text-xs font-semibold text-indigo-400 ${
               theme === 'dark' ? 'border-white/10' : 'border-slate-100'
             }`}>
-              <span>Scroll to Security Architecture</span>
-              <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+              <span>View security</span>
+              <ArrowRight className="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" />
             </div>
           </div>
 
@@ -178,7 +171,7 @@ export const PrivacyCenterDashboard: React.FC<PrivacyCenterDashboardProps> = ({ 
               theme === 'dark'
                 ? 'bg-[#0d1220]/90 border-white/10 hover:border-pink-500/50 hover:bg-[#12182b]'
                 : 'bg-white border-slate-200 shadow-md shadow-slate-200/50 hover:border-pink-400 hover:shadow-xl'
-            } hover:-translate-y-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-500`}
+            } hover:-translate-y-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-500`}
           >
             <div>
               <div className="w-12 h-12 rounded-xl flex items-center justify-center p-0.5 bg-gradient-to-tr from-pink-500 to-rose-500 shadow-md mb-5">
@@ -193,18 +186,17 @@ export const PrivacyCenterDashboard: React.FC<PrivacyCenterDashboardProps> = ({ 
               <h3 className={`font-display text-xl font-bold group-hover:text-pink-400 transition-colors mb-2 ${
                 theme === 'dark' ? 'text-slate-100' : 'text-slate-900'
               }`}>
-                DATA TRANSPARENCY
+                Data Transparency
               </h3>
               <p className={`text-sm leading-relaxed mb-4 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
-                See the interactive lifecycle of your information: how account data is generated, used, isolated, and
-                controlled step by step.
+                See how your data moves through registration, active usage, and safe storage.
               </p>
             </div>
             <div className={`pt-4 border-t flex items-center justify-between text-xs font-semibold text-pink-400 ${
               theme === 'dark' ? 'border-white/10' : 'border-slate-100'
             }`}>
-              <span>Scroll to Transparency Flow</span>
-              <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+              <span>View data flow</span>
+              <ArrowRight className="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" />
             </div>
           </div>
 
@@ -221,7 +213,7 @@ export const PrivacyCenterDashboard: React.FC<PrivacyCenterDashboardProps> = ({ 
               theme === 'dark'
                 ? 'bg-[#0d1220]/90 border-white/10 hover:border-emerald-500/50 hover:bg-[#12182b]'
                 : 'bg-white border-slate-200 shadow-md shadow-slate-200/50 hover:border-emerald-400 hover:shadow-xl'
-            } hover:-translate-y-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500`}
+            } hover:-translate-y-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500`}
           >
             <div>
               <div className="w-12 h-12 rounded-xl flex items-center justify-center p-0.5 bg-gradient-to-tr from-emerald-500 to-teal-500 shadow-md mb-5">
@@ -236,18 +228,17 @@ export const PrivacyCenterDashboard: React.FC<PrivacyCenterDashboardProps> = ({ 
               <h3 className={`font-display text-xl font-bold group-hover:text-emerald-400 transition-colors mb-2 ${
                 theme === 'dark' ? 'text-slate-100' : 'text-slate-900'
               }`}>
-                MANAGE YOUR INFORMATION
+                Manage Data & Account
               </h3>
               <p className={`text-sm leading-relaxed mb-4 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
-                Launch our interactive management interface: download personal data archive, view active devices, and
-                test account deletion flows.
+                Download a copy of your personal data archive, review devices, or request deletion.
               </p>
             </div>
             <div className={`pt-4 border-t flex items-center justify-between text-xs font-semibold text-emerald-400 ${
               theme === 'dark' ? 'border-white/10' : 'border-slate-100'
             }`}>
-              <span>Open Data Management</span>
-              <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+              <span>Manage data</span>
+              <ArrowRight className="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" />
             </div>
           </div>
 
@@ -264,7 +255,7 @@ export const PrivacyCenterDashboard: React.FC<PrivacyCenterDashboardProps> = ({ 
               theme === 'dark'
                 ? 'bg-[#0d1220]/90 border-white/10 hover:border-cyan-500/50 hover:bg-[#12182b]'
                 : 'bg-white border-slate-200 shadow-md shadow-slate-200/50 hover:border-cyan-400 hover:shadow-xl'
-            } hover:-translate-y-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500`}
+            } hover:-translate-y-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500`}
           >
             <div>
               <div className="w-12 h-12 rounded-xl flex items-center justify-center p-0.5 bg-gradient-to-tr from-cyan-500 to-indigo-500 shadow-md mb-5">
@@ -279,18 +270,17 @@ export const PrivacyCenterDashboard: React.FC<PrivacyCenterDashboardProps> = ({ 
               <h3 className={`font-display text-xl font-bold group-hover:text-cyan-400 transition-colors mb-2 ${
                 theme === 'dark' ? 'text-slate-100' : 'text-slate-900'
               }`}>
-                PRIVACY FAQ
+                Frequently Asked Questions
               </h3>
               <p className={`text-sm leading-relaxed mb-4 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
-                Direct answers to common questions about password encryption, multi-device usage, Private mode
-                enforcement, and managing your privacy settings.
+                Direct answers to common questions about password encryption, account recovery, and data rights.
               </p>
             </div>
             <div className={`pt-4 border-t flex items-center justify-between text-xs font-semibold text-cyan-400 ${
               theme === 'dark' ? 'border-white/10' : 'border-slate-100'
             }`}>
-              <span>Scroll to Interactive FAQ</span>
-              <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+              <span>Read answers</span>
+              <ArrowRight className="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" />
             </div>
           </div>
         </div>

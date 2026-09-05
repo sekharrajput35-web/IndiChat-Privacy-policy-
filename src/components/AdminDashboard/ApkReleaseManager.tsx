@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { usePortal } from '../../context/PortalContext';
 import { ApkConfig, ApkDisplayStatus } from '../../types';
-import { uploadAdminApkApi, updateAdminApkConfigApi, ApkUploadProgress } from '../../services/api';
+import { uploadAdminApkApi, uploadAdminApkChunkedApi, updateAdminApkConfigApi, ApkUploadProgress } from '../../services/api';
 import {
   Smartphone,
   Upload,
@@ -25,6 +25,7 @@ import {
   Zap,
   Clock,
   XCircle,
+  Layers,
 } from 'lucide-react';
 
 export const ApkReleaseManager: React.FC = () => {
@@ -190,24 +191,24 @@ export const ApkReleaseManager: React.FC = () => {
     setFeedback(null);
 
     try {
-      const formData = new FormData();
-      formData.append('apkFile', selectedFile);
-      formData.append('versionName', versionName);
-      formData.append('versionCode', versionCode);
-      formData.append('releaseNotes', releaseNotes);
-      formData.append('minAndroidVersion', minAndroidVersion);
-      formData.append('packageName', packageName);
-      formData.append('appName', appName);
-      formData.append('displayStatus', displayStatus);
-      formData.append('directDownloadEnabled', String(displayStatus === 'active'));
-
-      const res = await uploadAdminApkApi(
-        formData,
-        (progress) => {
+      const res = await uploadAdminApkChunkedApi({
+        file: selectedFile,
+        metadata: {
+          versionName,
+          versionCode,
+          releaseNotes,
+          minAndroidVersion,
+          packageName,
+          appName,
+          displayStatus,
+          directDownloadEnabled: String(displayStatus === 'active'),
+        },
+        chunkSize: 2.5 * 1024 * 1024,
+        onProgress: (progress) => {
           setUploadProgress(progress);
         },
-        abortController.signal
-      );
+        abortSignal: abortController.signal,
+      });
 
       setApkConfig(res.apk);
       setSelectedFile(null);
@@ -721,29 +722,48 @@ export const ApkReleaseManager: React.FC = () => {
               </div>
             </div>
 
-            {/* Live Upload Progress Card */}
+            {/* Live Upload Progress Card with Chunk Tracking */}
             {isUploading && uploadProgress && (
               <div
                 id="admin-apk-upload-progress-box"
-                className="p-5 rounded-2xl border-2 border-emerald-300 dark:border-emerald-700/80 bg-emerald-50/60 dark:bg-emerald-950/40 shadow-sm space-y-3.5"
+                className="p-5 rounded-2xl border-2 border-emerald-300 dark:border-emerald-700/80 bg-emerald-50/60 dark:bg-emerald-950/40 shadow-sm space-y-3.5 transition-all"
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <RefreshCw className="w-4 h-4 text-emerald-600 dark:text-emerald-400 animate-spin shrink-0" />
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-2.5">
+                    {uploadProgress.phase === 'complete' ? (
+                      <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                    ) : (
+                      <RefreshCw className="w-5 h-5 text-emerald-600 dark:text-emerald-400 animate-spin shrink-0 mt-0.5" />
+                    )}
                     <div>
-                      <p className="text-xs font-bold text-gray-900 dark:text-white">
-                        {uploadProgress.percent < 100
-                          ? `Uploading APK (${uploadProgress.percent}%)`
-                          : 'Processing & Verifying SHA-256 Checksum on Server...'}
+                      <p className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <span>
+                          {uploadProgress.phase === 'initializing' && 'Initializing Chunked Upload...'}
+                          {uploadProgress.phase === 'uploading' &&
+                            `Chunked Upload in Progress (${uploadProgress.percent}%)`}
+                          {uploadProgress.phase === 'assembling' &&
+                            'Assembling Chunks & Verifying SHA-256 Checksum...'}
+                          {uploadProgress.phase === 'complete' && 'APK Assembled & Release Active!'}
+                          {!uploadProgress.phase &&
+                            (uploadProgress.percent < 100
+                              ? `Uploading APK (${uploadProgress.percent}%)`
+                              : 'Processing & Verifying SHA-256 Checksum on Server...')}
+                        </span>
+                        {uploadProgress.currentChunk && uploadProgress.totalChunks && (
+                          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 font-mono">
+                            Part {uploadProgress.currentChunk}/{uploadProgress.totalChunks}
+                          </span>
+                        )}
                       </p>
-                      <p className="text-[11px] text-gray-500 dark:text-gray-400">
-                        {uploadProgress.percent < 100
-                          ? 'Transferring file data from your browser to the secure container...'
-                          : 'Validating APK integrity package headers and saving release configuration.'}
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                        {uploadProgress.statusMessage ||
+                          (uploadProgress.percent < 100
+                            ? 'Transferring file data in resilient 2.5 MB chunks...'
+                            : 'Validating package headers and saving release configuration.')}
                       </p>
                     </div>
                   </div>
-                  <span className="font-mono text-base font-extrabold text-emerald-600 dark:text-emerald-400">
+                  <span className="font-mono text-lg font-extrabold text-emerald-600 dark:text-emerald-400 shrink-0">
                     {uploadProgress.percent}%
                   </span>
                 </div>
@@ -756,8 +776,47 @@ export const ApkReleaseManager: React.FC = () => {
                   />
                 </div>
 
+                {/* Visual Chunk Segments Breakdown */}
+                {uploadProgress.totalChunks && uploadProgress.totalChunks > 1 && (
+                  <div className="space-y-1.5 pt-1">
+                    <div className="flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400">
+                      <span className="flex items-center gap-1 font-medium">
+                        <Layers className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                        <span>Chunk Parts Breakdown ({uploadProgress.totalChunks} × ~2.5 MB segments)</span>
+                      </span>
+                      <span className="font-mono text-emerald-700 dark:text-emerald-300 font-semibold">
+                        {Math.max(0, (uploadProgress.currentChunk || 1) - 1)} / {uploadProgress.totalChunks} completed
+                      </span>
+                    </div>
+                    <div
+                      className="grid gap-1"
+                      style={{
+                        gridTemplateColumns: `repeat(${Math.min(uploadProgress.totalChunks, 30)}, minmax(0, 1fr))`,
+                      }}
+                    >
+                      {Array.from({ length: uploadProgress.totalChunks }).map((_, idx) => {
+                        const isDone = (uploadProgress.currentChunk || 0) > idx + 1 || uploadProgress.phase === 'assembling' || uploadProgress.phase === 'complete';
+                        const isCurrent = (uploadProgress.currentChunk || 0) === idx + 1 && uploadProgress.phase === 'uploading';
+                        return (
+                          <div
+                            key={idx}
+                            title={`Chunk Part #${idx + 1} of ${uploadProgress.totalChunks}`}
+                            className={`h-2 rounded-xs transition-all duration-200 ${
+                              isDone
+                                ? 'bg-emerald-500 dark:bg-emerald-400'
+                                : isCurrent
+                                ? 'bg-amber-400 dark:bg-amber-300 animate-pulse'
+                                : 'bg-gray-200 dark:bg-gray-700/80'
+                            }`}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 {/* Metric Badges */}
-                <div className="flex flex-wrap items-center justify-between text-xs text-gray-600 dark:text-gray-300 gap-2 pt-1 border-t border-emerald-200/50 dark:border-emerald-800/40">
+                <div className="flex flex-wrap items-center justify-between text-xs text-gray-600 dark:text-gray-300 gap-2 pt-1.5 border-t border-emerald-200/50 dark:border-emerald-800/40">
                   <div className="flex items-center gap-1">
                     <span className="text-gray-400">Transferred:</span>
                     <span className="font-semibold text-gray-800 dark:text-gray-200 font-mono">
@@ -767,25 +826,32 @@ export const ApkReleaseManager: React.FC = () => {
 
                   {uploadProgress.speedFormatted && (
                     <div className="flex items-center gap-1 text-emerald-700 dark:text-emerald-300 font-medium">
-                      <Zap className="w-3 h-3 text-emerald-500" />
+                      <Zap className="w-3.5 h-3.5 text-emerald-500" />
                       <span>Speed: {uploadProgress.speedFormatted}</span>
                     </div>
                   )}
 
                   {uploadProgress.estimatedSecondsLeft !== null && uploadProgress.estimatedSecondsLeft > 0 && (
                     <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
-                      <Clock className="w-3 h-3 text-gray-400" />
+                      <Clock className="w-3.5 h-3.5 text-gray-400" />
                       <span>ETA: ~{uploadProgress.estimatedSecondsLeft}s</span>
+                    </div>
+                  )}
+
+                  {uploadProgress.retryAttempt && uploadProgress.retryAttempt > 0 && (
+                    <div className="flex items-center gap-1 px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-200 text-[11px] font-semibold">
+                      <AlertTriangle className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+                      <span>Retrying part (try {uploadProgress.retryAttempt}/3)...</span>
                     </div>
                   )}
 
                   <button
                     type="button"
                     onClick={handleCancelUpload}
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 ml-auto transition-colors"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 ml-auto transition-colors px-2 py-1 rounded hover:bg-red-50 dark:hover:bg-red-950/30"
                   >
                     <XCircle className="w-3.5 h-3.5" />
-                    <span>Cancel</span>
+                    <span>Cancel Upload</span>
                   </button>
                 </div>
               </div>

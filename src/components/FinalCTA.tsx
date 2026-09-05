@@ -35,61 +35,25 @@ export const FinalCTA: React.FC<FinalCTAProps> = ({ theme, onExploreClick, onOpe
           <div className="absolute -top-24 -right-24 w-64 h-64 bg-pink-500/20 dark:bg-pink-500/15 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-indigo-500/20 dark:bg-indigo-500/15 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="relative z-10 max-w-3xl mx-auto space-y-5 sm:space-y-6">
-            {/* Tagline Pill */}
-            <div className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full border border-pink-500/30 bg-pink-500/10 backdrop-blur-md max-w-full">
-              <Sparkles className="w-3.5 h-3.5 text-pink-500 dark:text-pink-400 shrink-0" />
-              <span className="text-[11px] sm:text-xs font-semibold tracking-wider uppercase font-mono-code text-pink-600 dark:text-pink-300 truncate">
-                Everything You Love. One App You Trust.
-              </span>
-            </div>
-
-            {/* Exact Required Heading */}
-            <h2 className={`font-display text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight ${
+          <div className="relative z-10 max-w-2xl mx-auto space-y-5">
+            {/* Heading */}
+            <h2 className={`font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight ${
               theme === 'dark' ? 'text-slate-100' : 'text-slate-900'
             }`}>
               A Super App Built Around You
             </h2>
 
-            {/* Exact Required Description */}
+            {/* Description */}
             <p
-              className={`text-sm sm:text-lg leading-relaxed max-w-2xl mx-auto ${
+              className={`text-base sm:text-lg leading-relaxed ${
                 theme === 'dark' ? 'text-slate-300' : 'text-slate-600'
               }`}
             >
-              Chat, create, share, discover, shop, sell, watch and connect—all while maintaining control over
-              your supported privacy preferences.
+              Chat, share, and connect with total control over your personal privacy.
             </p>
 
-            {/* Super App Feature Matrix Pills */}
-            <div className="flex flex-wrap justify-center gap-2 pt-2 pb-2">
-              {[
-                { label: 'Chat & Audio', icon: MessageCircle, color: 'text-indigo-500' },
-                { label: 'Reels & Shorts', icon: Video, color: 'text-pink-500' },
-                { label: 'Live Broadcasts', icon: Radio, color: 'text-rose-500' },
-                { label: 'Shop & Marketplace', icon: ShoppingBag, color: 'text-amber-500' },
-                { label: 'Social Discovery', icon: Heart, color: 'text-purple-500' },
-                { label: 'Privacy Vault', icon: Shield, color: 'text-emerald-500' },
-              ].map((pill, i) => {
-                const PillIcon = pill.icon;
-                return (
-                  <span
-                    key={i}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
-                      theme === 'dark'
-                        ? 'bg-white/5 border-white/10 text-slate-300 hover:border-white/20'
-                        : 'bg-white border-slate-200 text-slate-700 shadow-sm hover:border-indigo-200'
-                    }`}
-                  >
-                    <PillIcon className={`w-3.5 h-3.5 ${pill.color} shrink-0`} />
-                    <span>{pill.label}</span>
-                  </span>
-                );
-              })}
-            </div>
-
             {/* Action Buttons: Install APK & Explore IndiChat */}
-            <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-3.5">
               {isApkVisible && (
                 <button
                   id="btn-cta-install-apk"
@@ -100,25 +64,27 @@ export const FinalCTA: React.FC<FinalCTAProps> = ({ theme, onExploreClick, onOpe
                       window.location.href = '/api/apk/download';
                     }
                   }}
-                  className="w-full sm:w-auto relative inline-flex items-center justify-center px-8 sm:px-9 py-3.5 sm:py-4 rounded-2xl font-bold text-white bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:from-emerald-500 hover:to-teal-400 shadow-xl shadow-emerald-600/30 transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 text-sm sm:text-base min-h-[48px]"
+                  className="w-full sm:w-auto relative inline-flex items-center justify-center px-8 py-3.5 rounded-2xl font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-lg shadow-emerald-600/25 transition-all duration-200 active:scale-[0.99] text-sm sm:text-base min-h-[44px]"
                 >
-                  <Smartphone className="w-5 h-5 mr-2 shrink-0" />
+                  <Smartphone className="w-4 h-4 mr-2 shrink-0" />
                   <span>Install APK ({apkConfig.versionName})</span>
-                  <Download className="w-4 h-4 ml-2.5 shrink-0 opacity-80" />
+                  <Download className="w-4 h-4 ml-2 shrink-0 opacity-80" />
                 </button>
               )}
 
               <button
                 id="btn-explore-indichat"
                 onClick={onExploreClick}
-                className={`w-full sm:w-auto relative inline-flex items-center justify-center px-8 sm:px-9 py-3.5 sm:py-4 rounded-2xl font-bold transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 text-sm sm:text-base min-h-[48px] ${
+                className={`w-full sm:w-auto relative inline-flex items-center justify-center px-8 py-3.5 rounded-2xl font-semibold transition-all duration-200 active:scale-[0.99] text-sm sm:text-base min-h-[44px] ${
                   isApkVisible
-                    ? 'border border-white/20 bg-white/10 hover:bg-white/15 text-white shadow-lg'
-                    : 'text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 shadow-xl shadow-indigo-600/30'
+                    ? theme === 'dark'
+                      ? 'border border-white/20 bg-white/10 hover:bg-white/15 text-white'
+                      : 'border border-slate-300 bg-white hover:bg-slate-50 text-slate-900 shadow-sm'
+                    : 'text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 shadow-lg shadow-indigo-600/25'
                 }`}
               >
                 <span>Explore IndiChat</span>
-                <ArrowRight className="w-5 h-5 ml-2.5 shrink-0" />
+                <ArrowRight className="w-4 h-4 ml-2 shrink-0" />
               </button>
             </div>
           </div>

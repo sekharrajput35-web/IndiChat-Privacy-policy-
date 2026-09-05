@@ -53,12 +53,8 @@ export const Footer: React.FC<FooterProps> = ({ theme, onOpenTerms, onOpenContac
             <p className={`text-sm leading-relaxed max-w-md ${
               theme === 'dark' ? 'text-slate-300' : 'text-slate-600'
             }`}>
-              IndiChat — A next-generation super app for communication, content, entertainment and commerce.
+              IndiChat — Secure communication, content, and connection built with privacy by design.
             </p>
-
-            <div className="text-xs font-mono-code font-semibold bg-gradient-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">
-              Everything You Love. One App You Trust.
-            </div>
           </div>
 
           {/* Quick Links Column */}
@@ -185,10 +181,7 @@ export const Footer: React.FC<FooterProps> = ({ theme, onOpenTerms, onOpenContac
             © 2026 IndiChat. All rights reserved.
           </div>
 
-          <div className="flex items-center gap-4 flex-wrap justify-center">
-            <span className="font-mono-code text-[11px] text-center">
-              Privacy-First Super App Architecture
-            </span>
+          <div className="flex items-center gap-4">
             <button
               onClick={scrollToTop}
               className={`w-10 h-10 rounded-xl border transition-all flex items-center justify-center ${

@@ -115,7 +115,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="flex items-center group focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-xl p-1"
               aria-label="IndiChat Home"
             >
-              <BrandLogo size="md" showTagline={true} />
+              <BrandLogo size="md" showTagline={false} />
             </button>
 
             {/* CENTER: Desktop Quick Section Links */}
@@ -269,7 +269,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Top Bar of Drawer: Title & Close Button */}
             <div>
               <div className="flex items-center justify-between pb-6 border-b border-white/10 dark:border-white/10 mb-6">
-                <BrandLogo size="md" showTagline={true} />
+                <BrandLogo size="md" showTagline={false} />
 
                 <button
                   id="btn-close-hamburger-menu"
@@ -313,16 +313,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </div>
               )}
 
-              {/* PRIMARY THREE OPTIONS (EXACT REQUIREMENT) */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-400 flex items-center gap-1.5">
-                    <Sparkles className="w-3 h-3" />
-                    <span>Primary Authentication</span>
-                  </span>
-                  <span className="text-[10px] font-mono-code text-slate-400">3 Verified Options</span>
-                </div>
-
+              {/* PRIMARY OPTIONS */}
+              <div className="space-y-2.5">
                 {/* Option 1: Login */}
                 <button
                   id="menu-opt-login"
@@ -331,26 +323,26 @@ export const Navbar: React.FC<NavbarProps> = ({
                     setIsMenuOpen(false);
                     onOpenLogin();
                   }}
-                  className={`w-full group p-4 rounded-2xl border transition-all duration-300 flex items-center justify-between text-left hover:scale-[1.02] active:scale-[0.98] ${
+                  className={`w-full group p-3.5 rounded-2xl border transition-all duration-200 flex items-center justify-between text-left active:scale-[0.99] ${
                     theme === 'dark'
-                      ? 'bg-[#0f1424] hover:bg-gradient-to-r hover:from-purple-900/30 hover:to-indigo-900/30 border-white/10 hover:border-indigo-500/50 shadow-md'
-                      : 'bg-white hover:bg-slate-50 border-slate-200 hover:border-indigo-400 shadow-sm'
+                      ? 'bg-[#0f1424] hover:bg-white/5 border-white/10 hover:border-indigo-500/50'
+                      : 'bg-white hover:bg-slate-50 border-slate-200 hover:border-indigo-300 shadow-sm'
                   }`}
                 >
-                  <div className="flex items-center gap-3.5">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
-                      <LogIn className="w-5 h-5" />
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white shadow-sm">
+                      <LogIn className="w-4 h-4" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-base group-hover:text-indigo-400 transition-colors">
-                        1. Login
+                      <h4 className="font-semibold text-sm group-hover:text-indigo-400 transition-colors">
+                        Login
                       </h4>
                       <p className={`text-xs ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
-                        Access your existing IndiChat account
+                        Access your account
                       </p>
                     </div>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
+                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-400 group-hover:translate-x-0.5 transition-all" />
                 </button>
 
                 {/* Option 2: Register */}
@@ -358,36 +350,29 @@ export const Navbar: React.FC<NavbarProps> = ({
                   id="menu-opt-register"
                   type="button"
                   onClick={handleRegisterClick}
-                  className={`w-full group p-4 rounded-2xl border transition-all duration-300 flex items-center justify-between text-left hover:scale-[1.02] active:scale-[0.98] ${
+                  className={`w-full group p-3.5 rounded-2xl border transition-all duration-200 flex items-center justify-between text-left active:scale-[0.99] ${
                     theme === 'dark'
-                      ? 'bg-[#0f1424] hover:bg-gradient-to-r hover:from-indigo-900/30 hover:to-pink-900/30 border-white/10 hover:border-pink-500/50 shadow-md'
-                      : 'bg-white hover:bg-slate-50 border-slate-200 hover:border-pink-400 shadow-sm'
+                      ? 'bg-[#0f1424] hover:bg-white/5 border-white/10 hover:border-pink-500/50'
+                      : 'bg-white hover:bg-slate-50 border-slate-200 hover:border-pink-300 shadow-sm'
                   }`}
                 >
-                  <div className="flex items-center gap-3.5">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-indigo-600 to-pink-500 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
-                      <UserPlus className="w-5 h-5" />
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-pink-500 flex items-center justify-center text-white shadow-sm">
+                      <UserPlus className="w-4 h-4" />
                     </div>
                     <div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-bold text-base group-hover:text-pink-400 transition-colors">
-                          2. Register
-                        </h4>
-                        {registrationLink.isEnabled && (
-                          <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-mono-code font-semibold">
-                            Live Portal
-                          </span>
-                        )}
-                      </div>
+                      <h4 className="font-semibold text-sm group-hover:text-pink-400 transition-colors">
+                        Register
+                      </h4>
                       <p className={`text-xs ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
-                        Create a new profile or access portal
+                        Create a new account
                       </p>
                     </div>
                   </div>
                   {registrationLink.isEnabled ? (
-                    <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-pink-400 group-hover:translate-x-1 transition-all" />
+                    <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-pink-400 transition-all" />
                   ) : (
-                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-pink-400 group-hover:translate-x-1 transition-all" />
+                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-pink-400 group-hover:translate-x-0.5 transition-all" />
                   )}
                 </button>
 
@@ -399,31 +384,26 @@ export const Navbar: React.FC<NavbarProps> = ({
                     setIsMenuOpen(false);
                     onOpenAdminLogin();
                   }}
-                  className={`w-full group p-4 rounded-2xl border transition-all duration-300 flex items-center justify-between text-left hover:scale-[1.02] active:scale-[0.98] ${
+                  className={`w-full group p-3.5 rounded-2xl border transition-all duration-200 flex items-center justify-between text-left active:scale-[0.99] ${
                     theme === 'dark'
-                      ? 'bg-[#0f1424] hover:bg-gradient-to-r hover:from-purple-900/30 hover:to-emerald-900/30 border-white/10 hover:border-emerald-500/50 shadow-md'
-                      : 'bg-white hover:bg-slate-50 border-slate-200 hover:border-emerald-400 shadow-sm'
+                      ? 'bg-[#0f1424] hover:bg-white/5 border-white/10 hover:border-emerald-500/50'
+                      : 'bg-white hover:bg-slate-50 border-slate-200 hover:border-emerald-300 shadow-sm'
                   }`}
                 >
-                  <div className="flex items-center gap-3.5">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-purple-700 via-indigo-700 to-emerald-600 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
-                      <ShieldCheck className="w-5 h-5" />
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-700 to-emerald-600 flex items-center justify-center text-white shadow-sm">
+                      <ShieldCheck className="w-4 h-4" />
                     </div>
                     <div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-bold text-base group-hover:text-emerald-400 transition-colors">
-                          3. Admin Login
-                        </h4>
-                        <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 font-mono-code font-semibold">
-                          Secured
-                        </span>
-                      </div>
+                      <h4 className="font-semibold text-sm group-hover:text-emerald-400 transition-colors">
+                        Admin Login
+                      </h4>
                       <p className={`text-xs ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
-                        Authorized CMS & Website management
+                        Manage site and portal settings
                       </p>
                     </div>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all" />
+                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all" />
                 </button>
 
                 {/* Option 4: Install Android APK */}
@@ -439,39 +419,34 @@ export const Navbar: React.FC<NavbarProps> = ({
                         window.location.href = '/api/apk/download';
                       }
                     }}
-                    className={`w-full group p-4 rounded-2xl border transition-all duration-300 flex items-center justify-between text-left hover:scale-[1.02] active:scale-[0.98] ${
+                    className={`w-full group p-3.5 rounded-2xl border transition-all duration-200 flex items-center justify-between text-left active:scale-[0.99] ${
                       theme === 'dark'
-                        ? 'bg-gradient-to-r from-emerald-950/40 via-[#0f1424] to-teal-950/30 hover:from-emerald-900/50 hover:to-teal-900/40 border-emerald-500/30 hover:border-emerald-400 shadow-md shadow-emerald-950/30'
-                        : 'bg-gradient-to-r from-emerald-50 via-white to-teal-50 hover:bg-emerald-100/50 border-emerald-300 hover:border-emerald-400 shadow-sm'
+                        ? 'bg-[#0f1424] hover:bg-emerald-950/20 border-emerald-500/30'
+                        : 'bg-emerald-50/40 hover:bg-emerald-50 border-emerald-200 shadow-sm'
                     }`}
                   >
-                    <div className="flex items-center gap-3.5">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-600 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
-                        <Smartphone className="w-6 h-6" />
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-600 flex items-center justify-center text-white shadow-sm">
+                        <Smartphone className="w-5 h-5" />
                       </div>
                       <div>
-                        <div className="flex items-center gap-2">
-                          <h4 className="font-bold text-base text-emerald-600 dark:text-emerald-400">
-                            4. Install APK
-                          </h4>
-                          <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border border-emerald-500/30 font-mono-code font-bold">
-                            {apkConfig.versionName}
-                          </span>
-                        </div>
+                        <h4 className="font-semibold text-sm text-emerald-600 dark:text-emerald-400">
+                          Install APK ({apkConfig.versionName})
+                        </h4>
                         <p className={`text-xs ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
-                          Official Android app package ({apkConfig.fileSizeFormatted || '27.1 MB'})
+                          Direct Android package download
                         </p>
                       </div>
                     </div>
-                    <Download className="w-5 h-5 text-emerald-500 group-hover:translate-y-0.5 transition-all" />
+                    <Download className="w-4 h-4 text-emerald-500" />
                   </button>
                 )}
               </div>
 
-              {/* SECONDARY: Quick Section Navigation */}
-              <div className="mt-8 pt-6 border-t border-white/10 dark:border-white/10">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-3">
-                  Website Quick Navigation
+              {/* Quick Section Navigation */}
+              <div className="mt-6 pt-5 border-t border-white/10 dark:border-white/10">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-2.5">
+                  Navigation
                 </span>
                 <div className="grid grid-cols-2 gap-2">
                   {navItems.map((item) => (
@@ -496,11 +471,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
 
             {/* Bottom Footer Info */}
-            <div className="pt-6 border-t border-white/10 dark:border-white/10 text-center space-y-2">
-              <div className="flex items-center justify-center gap-2 text-xs text-slate-400 font-mono-code">
-                <Shield className="w-3.5 h-3.5 text-indigo-400" />
-                <span>IndiChat 2026 • Encrypted Portal</span>
-              </div>
+            <div className="pt-4 border-t border-white/10 dark:border-white/10 text-center">
+              <span className="text-xs text-slate-400 font-mono-code">
+                © 2026 IndiChat
+              </span>
             </div>
           </div>
         </div>

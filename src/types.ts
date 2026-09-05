@@ -177,3 +177,41 @@ export interface ApkConfig {
   sourceType: 'uploaded' | 'external_url';
   externalUrl?: string;
 }
+
+export interface UserGrowthPoint {
+  date: string;
+  label: string;
+  totalUsers: number;
+  newRegistrations: number;
+  activeSessions: number;
+}
+
+export interface RecentActivityPoint {
+  date: string;
+  label: string;
+  adminActions: number;
+  securityEvents: number;
+  apkDownloads: number;
+  totalEvents: number;
+}
+
+export interface ActivityCategoryBreakdown {
+  category: string;
+  count: number;
+  color: string;
+}
+
+export interface AdminAnalyticsData {
+  timeRange: string;
+  growthTimeline: UserGrowthPoint[];
+  activityTimeline: RecentActivityPoint[];
+  categoryBreakdown: ActivityCategoryBreakdown[];
+  summary: {
+    totalUsers: number;
+    growthRatePct: number;
+    peakActivityDay: string;
+    totalRecentActions: number;
+    avgDailyRegistrations: number;
+    apkDownloads: number;
+  };
+}

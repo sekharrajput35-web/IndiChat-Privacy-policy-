@@ -1,7 +1,9 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import { ThemeMode, AdminStats, AdminAuditLog, RegistrationLinkConfig, ContactInfo, SocialLinkItem } from '../../types';
 import { usePortal } from '../../context/PortalContext';
 import { Users, Shield, Link2, Share2, Activity, ArrowUpRight, Mail, ExternalLink, Smartphone, Image as ImageIcon } from 'lucide-react';
+import { AdminAnalyticsChart } from './AdminAnalyticsChart';
 
 interface DashboardOverviewProps {
   theme: ThemeMode;
@@ -12,6 +14,30 @@ interface DashboardOverviewProps {
   socialLinks: SocialLinkItem[];
   onNavigateTab: (tab: string) => void;
 }
+
+const statContainerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.08,
+    },
+  },
+};
+
+const statCardVariants = {
+  hidden: { opacity: 0, y: 22, scale: 0.97 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.45,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+};
 
 export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   theme,
@@ -28,7 +54,12 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   return (
     <div className="space-y-8">
       {/* Top Welcome Banner */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-purple-900/30 via-indigo-900/30 to-pink-900/20 border border-indigo-500/20 relative overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+        className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-purple-900/30 via-indigo-900/30 to-pink-900/20 border border-indigo-500/20 relative overflow-hidden"
+      >
         <div className="relative z-10 max-w-2xl space-y-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -42,12 +73,19 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             or verified social channels synchronize directly with the live public IndiChat portal.
           </p>
         </div>
-      </div>
+      </motion.div>
 
       {/* 4 Stat KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <motion.div
+        variants={statContainerVariants}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
+      >
         {/* Total Registered Users */}
-        <div
+        <motion.div
+          variants={statCardVariants}
+          whileHover={{ y: -3, transition: { duration: 0.2 } }}
           className={`p-5 sm:p-6 rounded-2xl border transition-all ${
             theme === 'dark' ? 'bg-[#0f1424] border-white/10' : 'bg-white border-slate-200 shadow-sm'
           }`}
@@ -64,10 +102,12 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1">
             <span>Encrypted accounts in database</span>
           </span>
-        </div>
+        </motion.div>
 
         {/* Registration Link Mode */}
-        <div
+        <motion.div
+          variants={statCardVariants}
+          whileHover={{ y: -3, transition: { duration: 0.2 } }}
           onClick={() => onNavigateTab('registration')}
           className={`p-5 sm:p-6 rounded-2xl border cursor-pointer hover:border-indigo-500/50 transition-all ${
             theme === 'dark' ? 'bg-[#0f1424] border-white/10' : 'bg-white border-slate-200 shadow-sm'
@@ -86,10 +126,12 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             <span>Manage destination</span>
             <ArrowUpRight className="w-3 h-3" />
           </span>
-        </div>
+        </motion.div>
 
         {/* Enabled Social Media Channels */}
-        <div
+        <motion.div
+          variants={statCardVariants}
+          whileHover={{ y: -3, transition: { duration: 0.2 } }}
           onClick={() => onNavigateTab('social')}
           className={`p-5 sm:p-6 rounded-2xl border cursor-pointer hover:border-pink-500/50 transition-all ${
             theme === 'dark' ? 'bg-[#0f1424] border-white/10' : 'bg-white border-slate-200 shadow-sm'
@@ -108,10 +150,12 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             <span>Active on public site</span>
             <ArrowUpRight className="w-3 h-3" />
           </span>
-        </div>
+        </motion.div>
 
         {/* Security Health */}
-        <div
+        <motion.div
+          variants={statCardVariants}
+          whileHover={{ y: -3, transition: { duration: 0.2 } }}
           className={`p-5 sm:p-6 rounded-2xl border ${
             theme === 'dark' ? 'bg-[#0f1424] border-white/10' : 'bg-white border-slate-200 shadow-sm'
           }`}
@@ -128,11 +172,25 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           <span className="text-xs text-slate-400 font-mono-code">
             PBKDF2 Salted / TLS 1.3
           </span>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
+
+      {/* Visual Analytics & Trajectory Component with Recharts */}
+      <motion.div
+        initial={{ opacity: 0, y: 26 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.24, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <AdminAnalyticsChart theme={theme} onNavigateTab={onNavigateTab} />
+      </motion.div>
 
       {/* Grid: Quick Actions & Live Public Information Status */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <motion.div
+        initial={{ opacity: 0, y: 22 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, delay: 0.36, ease: [0.22, 1, 0.36, 1] }}
+        className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+      >
         {/* Live Public Config Summary */}
         <div
           className={`p-6 rounded-2xl border space-y-4 ${
@@ -308,7 +366,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

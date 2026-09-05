@@ -49,11 +49,7 @@ export const TransparencyTimeline: React.FC<TransparencyTimelineProps> = ({ them
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Heading */}
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-gradient-to-r from-emerald-500/15 via-teal-500/15 to-indigo-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 shadow-sm">
-            <Layers className="w-3.5 h-3.5" />
-            <span>Step-by-Step Data Journey</span>
-          </div>
+        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-14 space-y-3">
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
             <span className={theme === 'dark' ? 'text-slate-100' : 'text-slate-900'}>Clear. Simple. </span>
             <span className="bg-gradient-to-r from-emerald-500 via-teal-400 to-indigo-500 bg-clip-text text-transparent">
@@ -61,8 +57,7 @@ export const TransparencyTimeline: React.FC<TransparencyTimelineProps> = ({ them
             </span>
           </h2>
           <p className={`text-base sm:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
-            We explain our privacy practices in simple and understandable language so you always understand how your
-            information is handled across the IndiChat super app.
+            How your information is protected at every step of using IndiChat.
           </p>
         </div>
 
@@ -121,19 +116,6 @@ export const TransparencyTimeline: React.FC<TransparencyTimelineProps> = ({ them
 
                     {/* Content Header Text */}
                     <div className="flex-1 min-w-0 pr-1 sm:pr-2">
-                      <div className="flex items-center gap-1.5 sm:gap-2 mb-1 flex-wrap">
-                        <span className="text-[11px] font-mono-code font-bold uppercase text-indigo-500 dark:text-indigo-400">
-                          Step 0{item.step}
-                        </span>
-                        <span className="text-slate-400 text-xs">·</span>
-                        <span className={`text-[10px] font-mono-code uppercase px-2 py-0.5 rounded-md border ${
-                          theme === 'dark'
-                            ? 'bg-white/5 border-white/10 text-slate-300'
-                            : 'bg-indigo-50 border-indigo-200 text-indigo-700 font-semibold'
-                        }`}>
-                          {item.tag}
-                        </span>
-                      </div>
                       <h3 className={`font-display text-base sm:text-xl font-bold ${
                         theme === 'dark' ? 'text-slate-100' : 'text-slate-900'
                       }`}>
@@ -167,20 +149,12 @@ export const TransparencyTimeline: React.FC<TransparencyTimelineProps> = ({ them
                           : 'border-slate-100 text-slate-700 bg-indigo-50/30'
                       }`}
                     >
-                      <div className={`p-4 rounded-xl sm:rounded-2xl border space-y-2.5 ${
+                      <div className={`p-4 rounded-xl sm:rounded-2xl border ${
                         theme === 'dark'
-                          ? 'border-indigo-500/30 bg-indigo-500/10'
-                          : 'border-indigo-200 bg-white shadow-sm'
+                          ? 'border-indigo-500/20 bg-indigo-500/10 text-slate-300'
+                          : 'border-indigo-200 bg-white shadow-sm text-slate-700'
                       }`}>
-                        <div className={`flex items-center gap-2 text-xs font-mono-code font-semibold uppercase ${
-                          theme === 'dark' ? 'text-indigo-300' : 'text-indigo-700'
-                        }`}>
-                          <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                          <span>Detailed Transparency Breakdown:</span>
-                        </div>
-                        <p className={`text-xs sm:text-sm leading-relaxed ${
-                          theme === 'dark' ? 'text-slate-300' : 'text-slate-700'
-                        }`}>
+                        <p className="text-xs sm:text-sm leading-relaxed">
                           {item.detailedInfo}
                         </p>
                       </div>

@@ -107,7 +107,7 @@
     "securityBannerText": "End-to-end encrypted chats, reels, live streams and privacy-first commerce",
     "updatedAt": "2026-09-05T12:23:50.916Z",
     "logo": {
-      "logoType": "icon",
+      "logoType": "text",
       "imageUrl": "",
       "fileName": "",
       "fileSizeBytes": 0,
@@ -118,37 +118,37 @@
       "iconDesign": "shield_lock",
       "iconGradient": "indigo_pink",
       "shape": "rounded",
-      "heightPx": 42,
-      "updatedAt": "2026-09-05T12:23:50.845Z"
+      "heightPx": 52,
+      "updatedAt": "2026-09-05T12:48:05.084Z"
     }
   },
   "apkConfig": {
     "id": "apk-release-official",
     "appName": "IndiChat: Private & Secure Super App",
     "packageName": "com.indichat.app",
-    "versionName": "v2.4.1",
-    "versionCode": 24,
-    "fileName": "IndiChat-v2.4.1.apk",
-    "fileSizeBytes": 28416480,
-    "fileSizeFormatted": "27.1 MB",
-    "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
-    "releaseNotes": "• End-to-end encrypted messaging & crystal audio/video calls\n• Zero-telemetry private reels & ephemeral stories\n• Screenshot-protected media with forward restrictions\n• Ultra-low latency and battery optimization for all Android devices",
+    "versionName": "v3.0.0",
+    "versionCode": 30,
+    "fileName": "TestApp-v3.0.0.apk",
+    "fileSizeBytes": 57,
+    "fileSizeFormatted": "57 B",
+    "sha256": "f8a4c9ad68a658c34de3ffe1459e33013d91c8bc2fbddf409da0f9947004e8d1",
+    "releaseNotes": "• Verified chunked upload strategy test release",
     "downloadUrl": "/api/apk/download",
     "directDownloadEnabled": true,
     "displayStatus": "active",
-    "minAndroidVersion": "Android 8.0 (Oreo) or later",
-    "downloadCount": 1420,
-    "uploadedAt": "2026-09-05T12:23:50.916Z",
-    "updatedAt": "2026-09-05T12:23:50.916Z",
+    "minAndroidVersion": "Android 9.0+",
+    "downloadCount": 1421,
+    "uploadedAt": "2026-09-05T13:04:58.887Z",
+    "updatedAt": "2026-09-05T13:04:58.887Z",
     "sourceType": "uploaded",
     "externalUrl": ""
   },
   "admin": {
-    "email": "UP74AB4513@indichat.com",
     "username": "UP74AB4513",
-    "salt": "884fad1ebe0953306c11392745ed4355",
-    "passwordHash": "e926ee48bed86970c451e46b34ec54856cf508e69184cc07d15a59138536a1ebe9ec3193fe19a2a863d93f798613e4096a3a68862371f6948066830eda9afa01",
-    "updatedAt": "2026-09-05T12:35:00.000Z"
+    "email": "UP74AB4513@indichat.com",
+    "salt": "ef1977d48ab54ff79aef434f953d0c74",
+    "passwordHash": "6ff17e2d65448e213be9e2aa3e5545341ca42f859a69068440bb99f305cb982f58c64d4fc5a41a12b0230d19dddfe2d34c8b9297529cb868f6cce51f852a42b6",
+    "updatedAt": "2026-09-05T12:57:23.850Z"
   },
   "sessions": {
     "0f9d7cffbf7a0cd01792e21a011bbd36b03f94fc0aea29b10a5817792bc8a0b9": {
@@ -162,10 +162,160 @@
       "adminEmail": "up74ab4513",
       "createdAt": "2026-09-05T12:36:17.554Z",
       "expiresAt": "2026-09-06T12:36:17.554Z"
+    },
+    "2d1744f00261273f3c3735af6b78b12ae96abea19418d4e298e40c77f5b12e80": {
+      "token": "2d1744f00261273f3c3735af6b78b12ae96abea19418d4e298e40c77f5b12e80",
+      "adminEmail": "UP74AB4513",
+      "createdAt": "2026-09-05T12:57:26.873Z",
+      "expiresAt": "2026-09-06T12:57:26.873Z"
+    },
+    "ca552e6766eb1875c146cf5b6cc5ed435e78e47a8587a8d207f1f2840676bcbd": {
+      "token": "ca552e6766eb1875c146cf5b6cc5ed435e78e47a8587a8d207f1f2840676bcbd",
+      "adminEmail": "UP74AB4513",
+      "createdAt": "2026-09-05T12:57:34.366Z",
+      "expiresAt": "2026-09-06T12:57:34.366Z"
+    },
+    "efaa95cbb520eed7e34283cff051414691b02a32e027535773bce2cd0d64dd15": {
+      "token": "efaa95cbb520eed7e34283cff051414691b02a32e027535773bce2cd0d64dd15",
+      "adminEmail": "UP74AB4513",
+      "createdAt": "2026-09-05T13:04:58.836Z",
+      "expiresAt": "2026-09-06T13:04:58.836Z"
+    },
+    "7a2e8ac899010007cd94a6232bcfc8871820247e91e0b9327c1163ce69f21135": {
+      "token": "7a2e8ac899010007cd94a6232bcfc8871820247e91e0b9327c1163ce69f21135",
+      "adminEmail": "UP74AB4513",
+      "createdAt": "2026-09-05T13:05:08.696Z",
+      "expiresAt": "2026-09-06T13:05:08.696Z"
+    },
+    "475b91527ee95ac9d993d4ba6f27fe57a5e9a633fdaac5d4d399eb14379a3a1a": {
+      "token": "475b91527ee95ac9d993d4ba6f27fe57a5e9a633fdaac5d4d399eb14379a3a1a",
+      "adminEmail": "UP74AB4513",
+      "createdAt": "2026-09-05T13:11:03.098Z",
+      "expiresAt": "2026-09-06T13:11:03.098Z"
+    },
+    "3a18afa586cf6a045399cb0ae52d2a64a690cf9bc790361f618399a179e07d49": {
+      "token": "3a18afa586cf6a045399cb0ae52d2a64a690cf9bc790361f618399a179e07d49",
+      "adminEmail": "UP74AB4513",
+      "createdAt": "2026-09-05T13:11:10.567Z",
+      "expiresAt": "2026-09-06T13:11:10.567Z"
+    },
+    "d5589ecc188fcb9de728f50ff697acdd8f7ec8d7f2ebd60d56743e8b5fa30d22": {
+      "token": "d5589ecc188fcb9de728f50ff697acdd8f7ec8d7f2ebd60d56743e8b5fa30d22",
+      "adminEmail": "UP74AB4513",
+      "createdAt": "2026-09-05T13:11:50.244Z",
+      "expiresAt": "2026-09-06T13:11:50.244Z"
     }
   },
   "users": [],
   "auditLogs": [
+    {
+      "id": "log-1788613910244-pb9sc",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin authenticated successfully (UP74AB4513)",
+      "timestamp": "2026-09-05T13:11:50.244Z"
+    },
+    {
+      "id": "log-1788613870567-c1kwd",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin authenticated successfully (UP74AB4513)",
+      "timestamp": "2026-09-05T13:11:10.567Z"
+    },
+    {
+      "id": "log-1788613863099-vkog5",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin authenticated successfully (UP74AB4513)",
+      "timestamp": "2026-09-05T13:11:03.099Z"
+    },
+    {
+      "id": "log-1788613508696-vx98h",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin authenticated successfully (UP74AB4513)",
+      "timestamp": "2026-09-05T13:05:08.696Z"
+    },
+    {
+      "id": "log-1788613498887-t8nkf",
+      "action": "APK_CONFIG_UPDATED",
+      "details": "APK release updated to v3.0.0 (TestApp-v3.0.0.apk, status: active) by UP74AB4513",
+      "timestamp": "2026-09-05T13:04:58.887Z"
+    },
+    {
+      "id": "log-1788613498836-tj2nw",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin authenticated successfully (UP74AB4513)",
+      "timestamp": "2026-09-05T13:04:58.836Z"
+    },
+    {
+      "id": "log-1788613054384-ykt8b",
+      "action": "FAILED_ADMIN_LOGIN",
+      "details": "Failed admin login attempt with identifier \"admin@indichat.com\" from IP 127.0.0.1",
+      "timestamp": "2026-09-05T12:57:34.384Z"
+    },
+    {
+      "id": "log-1788613054366-jx83d",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin authenticated successfully (UP74AB4513)",
+      "timestamp": "2026-09-05T12:57:34.366Z"
+    },
+    {
+      "id": "log-1788613046874-r1ldj",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin authenticated successfully (UP74AB4513)",
+      "timestamp": "2026-09-05T12:57:26.874Z"
+    },
+    {
+      "id": "log-1788612978970-rug0e",
+      "action": "FAILED_ADMIN_LOGIN",
+      "details": "Failed admin login attempt with identifier \"UP74AB4513\" from IP 127.0.0.1",
+      "timestamp": "2026-09-05T12:56:18.970Z"
+    },
+    {
+      "id": "log-1788612974860-uyu3u",
+      "action": "FAILED_ADMIN_LOGIN",
+      "details": "Failed admin login attempt with identifier \"admin@indichat.com\" from IP 127.0.0.1",
+      "timestamp": "2026-09-05T12:56:14.861Z"
+    },
+    {
+      "id": "log-1788612679811-yndw0",
+      "action": "ADMIN_LOGOUT",
+      "details": "Admin session ended (UP74AB4513)",
+      "timestamp": "2026-09-05T12:51:19.811Z"
+    },
+    {
+      "id": "log-1788612661036-kazm8",
+      "action": "APK_CONFIG_UPDATED",
+      "details": "APK release updated to v2.4.1 (IndiChat.apk, status: active) by UP74AB4513",
+      "timestamp": "2026-09-05T12:51:01.036Z"
+    },
+    {
+      "id": "log-1788612606862-85tun",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin logged in successfully (UP74AB4513)",
+      "timestamp": "2026-09-05T12:50:06.862Z"
+    },
+    {
+      "id": "log-1788612513210-af87y",
+      "action": "ADMIN_LOGOUT",
+      "details": "Admin session ended (UP74AB4513)",
+      "timestamp": "2026-09-05T12:48:33.210Z"
+    },
+    {
+      "id": "log-1788612485084-xqac6",
+      "action": "LOGO_UPDATED",
+      "details": "Updated website logo (text) by UP74AB4513",
+      "timestamp": "2026-09-05T12:48:05.084Z"
+    },
+    {
+      "id": "log-1788612457518-yqq5z",
+      "action": "LOGO_UPDATED",
+      "details": "Updated website logo (image) by UP74AB4513",
+      "timestamp": "2026-09-05T12:47:37.518Z"
+    },
+    {
+      "id": "log-1788611877203-nyf82",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin logged in successfully (UP74AB4513)",
+      "timestamp": "2026-09-05T12:37:57.203Z"
+    },
     {
       "id": "log-1788611777555-qzduj",
       "action": "ADMIN_LOGIN",

@@ -23,11 +23,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ theme }) => {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Heading */}
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-gradient-to-r from-pink-500/15 via-purple-500/15 to-indigo-500/15 border border-pink-500/30 text-pink-600 dark:text-pink-400 shadow-sm">
-            <HelpCircle className="w-3.5 h-3.5" />
-            <span>Got Questions?</span>
-          </div>
+        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-14 space-y-3">
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
             <span className={theme === 'dark' ? 'text-slate-100' : 'text-slate-900'}>Frequently Asked </span>
             <span className="bg-gradient-to-r from-pink-500 via-purple-400 to-indigo-500 bg-clip-text text-transparent">
@@ -35,24 +31,24 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ theme }) => {
             </span>
           </h2>
           <p className={`text-base sm:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
-            Quick, transparent answers to help you navigate privacy, credential protection, and account settings.
+            Answers to common privacy, encryption, and account questions.
           </p>
         </div>
 
         {/* FAQ Accordion List (Closes others when one is opened) */}
-        <div className="space-y-4">
-          {FAQ_ITEMS.map((item, index) => {
+        <div className="space-y-3.5">
+          {FAQ_ITEMS.map((item) => {
             const isOpen = activeFaqId === item.id;
 
             return (
               <div
                 key={item.id}
                 id={`faq-item-${item.id}`}
-                className={`rounded-2xl sm:rounded-3xl border transition-all duration-300 overflow-hidden ${
+                className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
                   isOpen
                     ? theme === 'dark'
-                      ? 'bg-[#0d1222]/95 border-pink-500/50 shadow-xl shadow-pink-950/20'
-                      : 'bg-white border-pink-200 shadow-lg shadow-pink-100/40'
+                      ? 'bg-[#0d1222]/95 border-pink-500/40 shadow-lg'
+                      : 'bg-white border-pink-200 shadow-md'
                     : theme === 'dark'
                     ? 'bg-[#0a0e1a]/80 border-white/10 hover:border-white/20'
                     : 'bg-white/80 border-slate-200 hover:border-pink-200 shadow-sm'
@@ -60,23 +56,18 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ theme }) => {
               >
                 <button
                   onClick={() => toggleFaq(item.id)}
-                  className="w-full p-4 sm:p-6 text-left flex items-center justify-between gap-3 sm:gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 rounded-2xl active:scale-[0.99] transition-transform min-h-[48px]"
+                  className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 rounded-2xl active:scale-[0.99] transition-transform min-h-[48px]"
                   aria-expanded={isOpen}
                 >
-                  <div className="flex items-center gap-3 sm:gap-4 min-w-0 pr-1">
-                    <span className="font-mono-code text-xs font-bold text-pink-500 shrink-0 px-2 py-1 rounded-lg bg-pink-500/10 border border-pink-500/20">
-                      Q{index + 1}
-                    </span>
-                    <h3 className={`font-display text-sm sm:text-lg font-bold leading-snug break-words ${
-                      theme === 'dark' ? 'text-slate-100' : 'text-slate-900'
-                    }`}>
-                      {item.question}
-                    </h3>
-                  </div>
+                  <h3 className={`font-display text-sm sm:text-base font-bold leading-snug break-words ${
+                    theme === 'dark' ? 'text-slate-100' : 'text-slate-900'
+                  }`}>
+                    {item.question}
+                  </h3>
 
                   {/* Rotatable Plus into Minus Icon */}
                   <div
-                    className={`w-8 h-8 rounded-xl flex items-center justify-center border shrink-0 transition-all duration-300 ${
+                    className={`w-7 h-7 rounded-lg flex items-center justify-center border shrink-0 transition-all duration-200 ${
                       isOpen
                         ? 'border-pink-500/50 bg-pink-500/20 text-pink-400 rotate-180'
                         : theme === 'dark'
@@ -84,7 +75,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ theme }) => {
                         : 'border-slate-200 bg-slate-100 text-slate-600'
                     }`}
                   >
-                    {isOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                    {isOpen ? <Minus className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
                   </div>
                 </button>
 

@@ -8,6 +8,7 @@ import {
   UserAccount,
   ApkConfig,
   WebsiteLogoConfig,
+  AdminAnalyticsData,
 } from '../types';
 
 export interface PublicDataResponse {
@@ -222,6 +223,18 @@ export async function getAdminAuditLogsApi(): Promise<AdminAuditLog[]> {
   return data.auditLogs;
 }
 
+export async function getAdminAnalyticsApi(range: string = '30d'): Promise<AdminAnalyticsData> {
+  const res = await fetch(`/api/admin/analytics?range=${encodeURIComponent(range)}`, {
+    headers: getAdminHeaders(),
+  });
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.error || 'Failed to fetch administrator analytics data');
+  }
+  const data = await res.json();
+  return data.analytics;
+}
+
 export async function fetchAdminOverview(): Promise<AdminOverviewResponse> {
   const res = await fetch('/api/admin/overview', {
     headers: getAdminHeaders(),
@@ -358,6 +371,12 @@ export interface ApkUploadProgress {
   formattedTotal: string;
   speedFormatted: string;
   estimatedSecondsLeft: number | null;
+  phase?: 'initializing' | 'uploading' | 'assembling' | 'complete' | 'error';
+  currentChunk?: number;
+  totalChunks?: number;
+  chunkSize?: number;
+  statusMessage?: string;
+  retryAttempt?: number;
 }
 
 export function formatTransferBytes(bytes: number): string {
@@ -366,6 +385,273 @@ export function formatTransferBytes(bytes: number): string {
   const sizes = ['B', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
+export interface ChunkedApkUploadOptions {
+  file: File;
+  metadata?: {
+    versionName?: string;
+    versionCode?: number | string;
+    releaseNotes?: string;
+    minAndroidVersion?: string;
+    packageName?: string;
+    appName?: string;
+    displayStatus?: string;
+    directDownloadEnabled?: boolean | string;
+  };
+  chunkSize?: number; // default: 2.5 MB
+  onProgress?: (progress: ApkUploadProgress) => void;
+  abortSignal?: AbortSignal;
+}
+
+/**
+ * High-performance Chunked Upload Strategy for APK files.
+ * Slices the APK into resilient parts (default 2.5MB), uploads with auto-retry
+ * per chunk, tracks accurate granular progress and ETA, and asks server to assemble.
+ */
+export async function uploadAdminApkChunkedApi(
+  options: ChunkedApkUploadOptions
+): Promise<{
+  success: boolean;
+  message: string;
+  apk: ApkConfig;
+}> {
+  const { file, metadata = {}, onProgress, abortSignal } = options;
+  const token = authStorage.getAdminToken();
+  const chunkSize = options.chunkSize || 2.5 * 1024 * 1024; // 2.5 MB chunks
+  const totalChunks = Math.max(1, Math.ceil(file.size / chunkSize));
+  const startTime = Date.now();
+  let uploadId: string | null = null;
+
+  const notifyCancel = async (id: string) => {
+    try {
+      await fetch('/api/admin/apk/chunk/cancel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ uploadId: id }),
+      });
+    } catch {
+      // ignore
+    }
+  };
+
+  if (abortSignal?.aborted) {
+    throw new Error('Upload was cancelled before starting.');
+  }
+
+  // Phase 1: Initialize Chunked Session
+  onProgress?.({
+    percent: 0,
+    loadedBytes: 0,
+    totalBytes: file.size,
+    formattedLoaded: '0 B',
+    formattedTotal: formatTransferBytes(file.size),
+    speedFormatted: 'Initializing...',
+    estimatedSecondsLeft: null,
+    phase: 'initializing',
+    currentChunk: 0,
+    totalChunks,
+    chunkSize,
+    statusMessage: `Initializing chunked session for ${file.name} (${totalChunks} parts)...`,
+  });
+
+  const initResponse = await fetch('/api/admin/apk/chunk/init', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({
+      fileName: file.name,
+      fileSizeBytes: file.size,
+      totalChunks,
+      chunkSize,
+      metadata,
+    }),
+  });
+
+  if (!initResponse.ok) {
+    const errData = await initResponse.json().catch(() => ({}));
+    throw new Error(errData.error || `Failed to initialize chunk session (HTTP ${initResponse.status})`);
+  }
+
+  const initData = await initResponse.json();
+  uploadId = initData.uploadId;
+
+  // Phase 2: Upload Each Chunk with Retries & Live Speed/ETA Calculations
+  let cumulativeBytesUploaded = 0;
+  let lastSpeedCheckTime = startTime;
+  let lastSpeedCheckBytes = 0;
+  let currentSpeed = 0;
+
+  for (let chunkIdx = 0; chunkIdx < totalChunks; chunkIdx++) {
+    if (abortSignal?.aborted) {
+      if (uploadId) await notifyCancel(uploadId);
+      throw new Error('APK chunked upload was cancelled.');
+    }
+
+    const start = chunkIdx * chunkSize;
+    const end = Math.min(file.size, start + chunkSize);
+    const chunkBlob = file.slice(start, end);
+    const chunkSizeBytes = end - start;
+
+    let retryCount = 0;
+    const maxRetries = 3;
+    let chunkSuccess = false;
+
+    while (!chunkSuccess && retryCount <= maxRetries) {
+      if (abortSignal?.aborted) {
+        if (uploadId) await notifyCancel(uploadId);
+        throw new Error('APK chunked upload was cancelled.');
+      }
+
+      try {
+        await new Promise<void>((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+
+          if (abortSignal) {
+            const onAbort = () => {
+              xhr.abort();
+              reject(new Error('APK chunked upload was cancelled.'));
+            };
+            abortSignal.addEventListener('abort', onAbort, { once: true });
+          }
+
+          xhr.upload.onprogress = (event) => {
+            if (event.lengthComputable && onProgress) {
+              const currentChunkLoaded = event.loaded;
+              const overallLoaded = cumulativeBytesUploaded + currentChunkLoaded;
+              const now = Date.now();
+              const timeSinceLastSpeed = (now - lastSpeedCheckTime) / 1000;
+
+              if (timeSinceLastSpeed >= 0.25) {
+                const bytesDiff = overallLoaded - lastSpeedCheckBytes;
+                currentSpeed = Math.max(0, bytesDiff / timeSinceLastSpeed);
+                lastSpeedCheckTime = now;
+                lastSpeedCheckBytes = overallLoaded;
+              }
+
+              const overallPercent = Math.min(99, Math.round((overallLoaded / file.size) * 100));
+              const remainingBytes = Math.max(0, file.size - overallLoaded);
+              const etaSeconds = currentSpeed > 0 ? Math.ceil(remainingBytes / currentSpeed) : null;
+              const speedFormatted = currentSpeed > 0 ? `${formatTransferBytes(currentSpeed)}/s` : 'Measuring...';
+
+              onProgress({
+                percent: overallPercent,
+                loadedBytes: overallLoaded,
+                totalBytes: file.size,
+                formattedLoaded: formatTransferBytes(overallLoaded),
+                formattedTotal: formatTransferBytes(file.size),
+                speedFormatted,
+                estimatedSecondsLeft: etaSeconds,
+                phase: 'uploading',
+                currentChunk: chunkIdx + 1,
+                totalChunks,
+                chunkSize,
+                retryAttempt: retryCount > 0 ? retryCount : undefined,
+                statusMessage: `Uploading chunk ${chunkIdx + 1} of ${totalChunks} (${Math.round((event.loaded / event.total) * 100)}%)...`,
+              });
+            }
+          };
+
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              resolve();
+            } else {
+              let msg = `HTTP ${xhr.status}`;
+              try {
+                const parsed = JSON.parse(xhr.responseText || '{}');
+                if (parsed.error) msg = parsed.error;
+              } catch {
+                // ignore
+              }
+              reject(new Error(msg));
+            }
+          };
+
+          xhr.onerror = () => reject(new Error('Network connection error during chunk transfer'));
+          xhr.ontimeout = () => reject(new Error('Chunk upload timed out'));
+          xhr.timeout = 180000; // 3 minutes per chunk
+
+          const chunkFormData = new FormData();
+          chunkFormData.append('uploadId', uploadId!);
+          chunkFormData.append('chunkIndex', String(chunkIdx));
+          chunkFormData.append('chunk', chunkBlob, `${file.name}.part${chunkIdx}`);
+
+          xhr.open('POST', '/api/admin/apk/chunk/upload');
+          if (token) {
+            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+          }
+          xhr.send(chunkFormData);
+        });
+
+        chunkSuccess = true;
+        cumulativeBytesUploaded += chunkSizeBytes;
+      } catch (chunkErr) {
+        if (abortSignal?.aborted) throw chunkErr;
+        retryCount++;
+        if (retryCount > maxRetries) {
+          if (uploadId) await notifyCancel(uploadId);
+          throw new Error(
+            `Chunk #${chunkIdx + 1} failed after ${maxRetries} attempts: ${chunkErr instanceof Error ? chunkErr.message : String(chunkErr)}`
+          );
+        }
+        await new Promise((r) => setTimeout(r, 1000));
+      }
+    }
+  }
+
+  // Phase 3: Assembly & Cryptographic SHA-256 Validation on Server
+  onProgress?.({
+    percent: 100,
+    loadedBytes: file.size,
+    totalBytes: file.size,
+    formattedLoaded: formatTransferBytes(file.size),
+    formattedTotal: formatTransferBytes(file.size),
+    speedFormatted: 'Assembling...',
+    estimatedSecondsLeft: null,
+    phase: 'assembling',
+    currentChunk: totalChunks,
+    totalChunks,
+    chunkSize,
+    statusMessage: 'All chunks uploaded! Assembling APK & verifying SHA-256 integrity on server...',
+  });
+
+  const completeRes = await fetch('/api/admin/apk/chunk/complete', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({ uploadId }),
+  });
+
+  if (!completeRes.ok) {
+    const errData = await completeRes.json().catch(() => ({}));
+    throw new Error(errData.error || `Server failed to assemble chunks (HTTP ${completeRes.status})`);
+  }
+
+  const completeData = await completeRes.json();
+
+  onProgress?.({
+    percent: 100,
+    loadedBytes: file.size,
+    totalBytes: file.size,
+    formattedLoaded: formatTransferBytes(file.size),
+    formattedTotal: formatTransferBytes(file.size),
+    speedFormatted: 'Complete',
+    estimatedSecondsLeft: 0,
+    phase: 'complete',
+    currentChunk: totalChunks,
+    totalChunks,
+    chunkSize,
+    statusMessage: 'APK assembled and release is now active!',
+  });
+
+  return completeData;
 }
 
 export async function uploadAdminApkApi(
@@ -377,6 +663,25 @@ export async function uploadAdminApkApi(
   message: string;
   apk: ApkConfig;
 }> {
+  // If formData contains an apkFile File object, seamlessly route through high-performance chunked upload
+  const fileCandidate = formData.get('apkFile');
+  if (fileCandidate instanceof File) {
+    const metadata: Record<string, any> = {};
+    for (const [key, value] of formData.entries()) {
+      if (key !== 'apkFile' && typeof value === 'string') {
+        metadata[key] = value;
+      }
+    }
+
+    return uploadAdminApkChunkedApi({
+      file: fileCandidate,
+      metadata,
+      onProgress,
+      abortSignal,
+    });
+  }
+
+  // Fallback to standard upload
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     const token = authStorage.getAdminToken();
@@ -449,12 +754,10 @@ export async function uploadAdminApkApi(
     };
 
     xhr.ontimeout = () => {
-      reject(new Error('Upload request timed out after 10 minutes. If your network speed is slow, please use the Instant Cloud Link tab.'));
+      reject(new Error('Upload request timed out after 10 minutes.'));
     };
 
-    // 10 minutes timeout
     xhr.timeout = 600000;
-
     xhr.send(formData);
   });
 }

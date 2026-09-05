@@ -1,4 +1,9 @@
 import express, { Request, Response, NextFunction } from 'express';
+import dotenv from 'dotenv';
+import crypto from 'crypto';
+
+dotenv.config({ override: true });
+
 import path from 'path';
 import fs from 'fs';
 import multer from 'multer';
@@ -12,6 +17,13 @@ import {
   computeFileSha256,
   computeFileSha256Async,
 } from './server/apkStorage';
+import {
+  createChunkSession,
+  saveChunk,
+  assembleChunks,
+  cancelChunkSession,
+  getChunkSession,
+} from './server/chunkStorage';
 import { requireAuth, AuthRequest } from './src/middleware/auth.ts';
 import { getOrCreateUser, getUsers } from './src/db/users.ts';
 
@@ -44,6 +56,29 @@ const apkUploadStorage = multer.diskStorage({
 const uploadApkMiddleware = multer({
   storage: apkUploadStorage,
   limits: { fileSize: 350 * 1024 * 1024 }, // 350 MB max limit
+});
+
+// Configure Multer storage for chunked APK uploads (25MB max per individual chunk)
+const CHUNK_TEMP_DIR = path.join(process.cwd(), 'uploads', 'temp_chunks');
+if (!fs.existsSync(CHUNK_TEMP_DIR)) {
+  fs.mkdirSync(CHUNK_TEMP_DIR, { recursive: true });
+}
+
+const chunkUploadStorage = multer.diskStorage({
+  destination: (_req, _file, cb) => {
+    if (!fs.existsSync(CHUNK_TEMP_DIR)) {
+      fs.mkdirSync(CHUNK_TEMP_DIR, { recursive: true });
+    }
+    cb(null, CHUNK_TEMP_DIR);
+  },
+  filename: (_req, _file, cb) => {
+    cb(null, `chunk_${Date.now()}_${crypto.randomBytes(6).toString('hex')}`);
+  },
+});
+
+const uploadChunkMiddleware = multer({
+  storage: chunkUploadStorage,
+  limits: { fileSize: 25 * 1024 * 1024 }, // 25 MB max per chunk
 });
 
 // Configure Multer storage for uploaded Logo images
@@ -325,48 +360,115 @@ async function startServer() {
     });
   });
 
-  // --- ADMIN AUTHENTICATION ---
-  // Admin Login with Server-Side Salting & PBKDF2 Verification
+  // --- ADMIN AUTHENTICATION & SECURITY ---
+  // In-memory brute force protection tracking: IP -> { failedCount, lockedUntil }
+  const adminLoginAttempts = new Map<string, { failedCount: number; lockedUntil: number }>();
+
+  // Cleanup rate limiter entries periodically (every 10 minutes)
+  setInterval(() => {
+    const now = Date.now();
+    for (const [ip, entry] of adminLoginAttempts.entries()) {
+      if (entry.lockedUntil < now && entry.failedCount === 0) {
+        adminLoginAttempts.delete(ip);
+      }
+    }
+  }, 10 * 60 * 1000);
+
+  // Admin Login with Server-Side PBKDF2 Verification & Brute-Force Rate Limiting
   app.post('/api/admin/login', (req: Request, res: Response) => {
     try {
+      const clientIp =
+        (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ||
+        req.socket.remoteAddress ||
+        'unknown';
+      const now = Date.now();
+
+      // Check brute-force lockout
+      const attemptRecord = adminLoginAttempts.get(clientIp);
+      if (attemptRecord && attemptRecord.lockedUntil > now) {
+        const remainingMinutes = Math.ceil((attemptRecord.lockedUntil - now) / 60000);
+        res.status(429).json({
+          success: false,
+          error: `Too many failed administrator login attempts. Access temporarily locked for ${remainingMinutes} minute(s).`,
+          code: 'ADMIN_RATE_LIMITED',
+        });
+        return;
+      }
+
       const { usernameOrEmail, password } = req.body;
 
-      if (!usernameOrEmail || !password) {
-        res.status(400).json({ error: 'Admin username/email and password are required.' });
+      if (!usernameOrEmail || typeof usernameOrEmail !== 'string' || !password || typeof password !== 'string') {
+        res.status(400).json({
+          success: false,
+          error: 'Administrator username and password are required.',
+          code: 'MISSING_CREDENTIALS',
+        });
         return;
       }
 
-      const isValid = dbManager.verifyAdminCredentials(usernameOrEmail, password);
+      const trimmedIdentifier = usernameOrEmail.trim();
+      const isValid = dbManager.verifyAdminCredentials(trimmedIdentifier, password);
+
       if (!isValid) {
-        res.status(401).json({ error: 'Invalid administrator credentials. Access denied.' });
+        const current = adminLoginAttempts.get(clientIp) || { failedCount: 0, lockedUntil: 0 };
+        current.failedCount += 1;
+        if (current.failedCount >= 5) {
+          current.lockedUntil = now + 15 * 60 * 1000; // 15-minute security lockout
+          current.failedCount = 0;
+        }
+        adminLoginAttempts.set(clientIp, current);
+
+        dbManager.logAction(
+          'FAILED_ADMIN_LOGIN',
+          `Failed admin login attempt with identifier "${trimmedIdentifier.slice(0, 30)}" from IP ${clientIp}`
+        );
+
+        res.status(401).json({
+          success: false,
+          error: 'Invalid administrator credentials. Access denied.',
+          code: 'INVALID_CREDENTIALS',
+        });
         return;
       }
 
-      const sessionToken = dbManager.createAdminSession(usernameOrEmail);
+      // Successful verification: reset failed attempts
+      adminLoginAttempts.delete(clientIp);
+
+      const sessionToken = dbManager.createAdminSession(trimmedIdentifier);
+      const configuredAdminUsername = (process.env.ADMIN_USERNAME || 'UP74AB4513').trim();
+
       res.json({
         success: true,
         message: 'Administrator authentication verified',
         token: sessionToken,
         admin: {
-          email: usernameOrEmail,
+          username: configuredAdminUsername,
           role: 'SUPER_ADMIN',
         },
       });
     } catch (err) {
       console.error('Admin login error:', err);
-      res.status(500).json({ error: 'Authentication service temporarily unavailable' });
+      res.status(500).json({ success: false, error: 'Authentication service temporarily unavailable' });
     }
   });
 
   // Verify Admin Session Token
   app.get('/api/admin/verify', (req: Request, res: Response) => {
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    const customHeader = req.headers['x-admin-token'] as string | undefined;
+    let token: string | undefined;
+
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.split(' ')[1]?.trim();
+    } else if (customHeader) {
+      token = customHeader.trim();
+    }
+
+    if (!token) {
       res.status(401).json({ valid: false, error: 'No authorization token provided' });
       return;
     }
 
-    const token = authHeader.split(' ')[1];
     const session = dbManager.verifyAdminSession(token);
     if (!session) {
       res.status(401).json({ valid: false, error: 'Session expired or invalid' });
@@ -383,15 +485,41 @@ async function startServer() {
   // --- PROTECTED ADMIN MIDDLEWARE ---
   const requireAdminAuth = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      res.status(401).json({ error: 'Unauthorized: Admin authentication token required' });
+    const customHeader = req.headers['x-admin-token'] as string | undefined;
+    let token: string | undefined;
+
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.split(' ')[1]?.trim();
+    } else if (customHeader) {
+      token = customHeader.trim();
+    }
+
+    if (!token) {
+      res.status(401).json({
+        success: false,
+        error: 'Unauthorized: Admin authentication token required',
+        code: 'MISSING_ADMIN_TOKEN',
+      });
       return;
     }
 
-    const token = authHeader.split(' ')[1];
+    // Verify token structure (64-character hex string)
+    if (!/^[a-f0-9]{64}$/i.test(token)) {
+      res.status(401).json({
+        success: false,
+        error: 'Unauthorized: Malformed admin authentication token',
+        code: 'INVALID_TOKEN_FORMAT',
+      });
+      return;
+    }
+
     const session = dbManager.verifyAdminSession(token);
     if (!session) {
-      res.status(401).json({ error: 'Unauthorized: Admin session expired or invalid' });
+      res.status(401).json({
+        success: false,
+        error: 'Unauthorized: Admin session expired or invalid',
+        code: 'SESSION_EXPIRED',
+      });
       return;
     }
 
@@ -440,6 +568,18 @@ async function startServer() {
       res.json({ success: true, stats });
     } catch (err) {
       res.status(500).json({ error: 'Failed to fetch admin stats' });
+    }
+  });
+
+  // Dedicated data visualization & analytics endpoint
+  app.get('/api/admin/analytics', requireAdminAuth, (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const range = (req.query.range as string) || '30d';
+      const analytics = dbManager.getAnalyticsData(range);
+      res.json({ success: true, analytics });
+    } catch (err) {
+      console.error('Error fetching admin analytics:', err);
+      res.status(500).json({ error: 'Failed to generate admin analytics data' });
     }
   });
 
@@ -744,6 +884,193 @@ async function startServer() {
       }
     }
   );
+
+  // --- CHUNKED APK UPLOADS FOR HIGH-PERFORMANCE & LARGE FILES ---
+  // 1. Initialize chunked upload session
+  app.post('/api/admin/apk/chunk/init', requireAdminAuth, (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { fileName, fileSizeBytes, totalChunks, chunkSize, metadata } = req.body;
+
+      if (!fileName || !fileSizeBytes || !totalChunks) {
+        res.status(400).json({
+          success: false,
+          error: 'Missing required parameters: fileName, fileSizeBytes, totalChunks.',
+        });
+        return;
+      }
+
+      const cleanFileName = String(fileName).replace(/[^a-zA-Z0-9._-]/g, '_');
+      const adminEmail = req.adminSession?.adminEmail || 'admin';
+
+      const session = createChunkSession({
+        fileName: cleanFileName,
+        fileSizeBytes: Number(fileSizeBytes),
+        totalChunks: Number(totalChunks),
+        chunkSize: Number(chunkSize) || 2.5 * 1024 * 1024,
+        metadata: metadata || {},
+        adminEmail,
+      });
+
+      res.json({
+        success: true,
+        uploadId: session.uploadId,
+        fileName: session.fileName,
+        chunkSize: session.chunkSize,
+        totalChunks: session.totalChunks,
+      });
+    } catch (err) {
+      console.error('Error initializing chunked upload session:', err);
+      res.status(500).json({
+        success: false,
+        error: err instanceof Error ? err.message : 'Failed to initialize chunked upload',
+      });
+    }
+  });
+
+  // 2. Upload individual chunk
+  app.post(
+    '/api/admin/apk/chunk/upload',
+    requireAdminAuth,
+    uploadChunkMiddleware.single('chunk'),
+    async (req: AuthenticatedRequest, res: Response) => {
+      try {
+        const { uploadId, chunkIndex } = req.body;
+
+        if (!uploadId || chunkIndex === undefined || !req.file) {
+          res.status(400).json({
+            success: false,
+            error: 'Missing chunk upload parameters (uploadId, chunkIndex, or binary file).',
+          });
+          return;
+        }
+
+        const idx = parseInt(String(chunkIndex), 10);
+        if (isNaN(idx)) {
+          res.status(400).json({ success: false, error: 'chunkIndex must be an integer.' });
+          return;
+        }
+
+        const result = await saveChunk(uploadId, idx, req.file.path);
+
+        res.json({
+          success: true,
+          uploadId,
+          chunkIndex: result.chunkIndex,
+          uploadedCount: result.uploadedCount,
+          totalChunks: result.totalChunks,
+          isComplete: result.isComplete,
+        });
+      } catch (err) {
+        console.error('Error saving chunk part:', err);
+        // Attempt cleanup of temp uploaded file
+        if (req.file?.path && fs.existsSync(req.file.path)) {
+          try {
+            fs.unlinkSync(req.file.path);
+          } catch {
+            // ignore
+          }
+        }
+        res.status(500).json({
+          success: false,
+          error: err instanceof Error ? err.message : 'Failed to process chunk',
+        });
+      }
+    }
+  );
+
+  // 3. Complete chunked upload: assemble all parts, calculate SHA-256 and register release
+  app.post('/api/admin/apk/chunk/complete', requireAdminAuth, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { uploadId } = req.body;
+
+      if (!uploadId) {
+        res.status(400).json({ success: false, error: 'uploadId is required to complete session.' });
+        return;
+      }
+
+      const assembled = await assembleChunks(uploadId);
+      const meta = assembled.metadata || {};
+
+      const displayStatusVal: 'active' | 'paused' | 'hidden' =
+        meta.displayStatus === 'paused' || meta.displayStatus === 'hidden'
+          ? meta.displayStatus
+          : meta.directDownloadEnabled !== undefined
+          ? (meta.directDownloadEnabled === 'true' || meta.directDownloadEnabled === true ? 'active' : 'paused')
+          : 'active';
+
+      const updated = dbManager.updateApkConfig(
+        {
+          fileName: assembled.finalFileName,
+          fileSizeBytes: assembled.fileSizeBytes,
+          fileSizeFormatted: assembled.fileSizeFormatted,
+          sha256: assembled.sha256,
+          versionName: meta.versionName && meta.versionName.trim() ? meta.versionName.trim() : 'v2.4.2',
+          versionCode: meta.versionCode ? parseInt(String(meta.versionCode), 10) : Math.floor(Date.now() / 1000),
+          releaseNotes:
+            meta.releaseNotes && meta.releaseNotes.trim()
+              ? meta.releaseNotes.trim()
+              : '• New optimized release build with security enhancements.',
+          minAndroidVersion:
+            meta.minAndroidVersion && meta.minAndroidVersion.trim()
+              ? meta.minAndroidVersion.trim()
+              : 'Android 8.0 (Oreo) or higher',
+          packageName: meta.packageName && meta.packageName.trim() ? meta.packageName.trim() : 'com.indichat.app',
+          appName: meta.appName && meta.appName.trim() ? meta.appName.trim() : 'IndiChat: Private & Secure Super App',
+          downloadUrl: '/api/apk/download',
+          sourceType: 'uploaded',
+          displayStatus: displayStatusVal,
+          directDownloadEnabled: meta.directDownloadEnabled !== undefined ? (meta.directDownloadEnabled === 'true' || meta.directDownloadEnabled === true) : (displayStatusVal === 'active'),
+          uploadedAt: new Date().toISOString(),
+        },
+        assembled.adminEmail
+      );
+
+      res.json({
+        success: true,
+        message: `APK "${assembled.finalFileName}" assembled successfully (${assembled.fileSizeFormatted}). Version ${updated.versionName} is now live!`,
+        apk: updated,
+      });
+    } catch (err) {
+      console.error('Error assembling chunked APK upload:', err);
+      res.status(500).json({
+        success: false,
+        error: err instanceof Error ? err.message : 'Failed to finalize chunked APK upload',
+      });
+    }
+  });
+
+  // 4. Cancel chunked upload session
+  app.post('/api/admin/apk/chunk/cancel', requireAdminAuth, (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { uploadId } = req.body;
+      if (uploadId) {
+        cancelChunkSession(uploadId);
+      }
+      res.json({ success: true, message: 'Chunked upload session cancelled and purged.' });
+    } catch (err) {
+      console.error('Error cancelling chunked session:', err);
+      res.status(500).json({ success: false, error: 'Failed to cancel chunked session' });
+    }
+  });
+
+  // 5. Query chunk upload status (supports upload resumption)
+  app.get('/api/admin/apk/chunk/status/:uploadId', requireAdminAuth, (req: AuthenticatedRequest, res: Response) => {
+    const { uploadId } = req.params;
+    const session = getChunkSession(uploadId);
+    if (!session) {
+      res.status(404).json({ success: false, error: 'Session not found or expired' });
+      return;
+    }
+
+    res.json({
+      success: true,
+      uploadId: session.uploadId,
+      fileName: session.fileName,
+      totalChunks: session.totalChunks,
+      uploadedCount: session.uploadedChunks.size,
+      uploadedChunks: Array.from(session.uploadedChunks).sort((a, b) => a - b),
+    });
+  });
 
   // Update APK configuration (version, notes, toggle direct download, external url)
   app.put('/api/admin/apk/config', requireAdminAuth, (req: AuthenticatedRequest, res: Response) => {

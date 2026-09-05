@@ -87,11 +87,7 @@ export const PrivacyAtAGlance: React.FC<PrivacyAtAGlanceProps> = ({ theme }) => 
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-gradient-to-r from-indigo-500/15 via-purple-500/15 to-pink-500/15 border border-indigo-500/30 text-indigo-600 dark:text-indigo-400 shadow-sm">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Core Pillars</span>
-          </div>
+        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16 space-y-3">
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
             <span className={theme === 'dark' ? 'text-slate-100' : 'text-slate-900'}>Privacy At A </span>
             <span className="bg-gradient-to-r from-indigo-500 via-purple-400 to-pink-500 bg-clip-text text-transparent">
@@ -99,7 +95,7 @@ export const PrivacyAtAGlance: React.FC<PrivacyAtAGlanceProps> = ({ theme }) => 
             </span>
           </h2>
           <p className={`text-base sm:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
-            Built from the ground up to protect your interactions across chat, reels, live broadcasts, and commerce.
+            Simple principles designed to protect you across every feature.
           </p>
         </div>
 
@@ -126,7 +122,7 @@ export const PrivacyAtAGlance: React.FC<PrivacyAtAGlanceProps> = ({ theme }) => 
                   theme === 'dark'
                     ? 'bg-[#0d121f]/90 backdrop-blur-xl border-white/10 hover:bg-[#121829] shadow-xl shadow-black/30'
                     : 'bg-white/95 backdrop-blur-xl border-slate-200/90 shadow-xl shadow-indigo-100/40 hover:border-indigo-300 hover:bg-white'
-                } ${card.borderGlow} hover:-translate-y-2 hover:shadow-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500`}
+                } ${card.borderGlow} hover:-translate-y-1.5 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500`}
               >
                 {/* Subtle top gradient accent line */}
                 <div
@@ -134,24 +130,17 @@ export const PrivacyAtAGlance: React.FC<PrivacyAtAGlanceProps> = ({ theme }) => 
                 />
 
                 <div className="space-y-4">
-                  {/* Top row: Icon & Badge */}
-                  <div className="flex items-center justify-between gap-2">
+                  {/* Icon */}
+                  <div
+                    className={`w-12 h-12 rounded-2xl flex items-center justify-center p-0.5 bg-gradient-to-tr ${card.gradient} shadow-md group-hover:scale-105 transition-transform duration-300 shrink-0`}
+                  >
                     <div
-                      className={`w-12 h-12 rounded-2xl flex items-center justify-center p-0.5 bg-gradient-to-tr ${card.gradient} shadow-md group-hover:scale-110 transition-transform duration-300 shrink-0`}
+                      className={`w-full h-full rounded-[14px] flex items-center justify-center ${
+                        theme === 'dark' ? 'bg-[#0b0f19]' : 'bg-white'
+                      }`}
                     >
-                      <div
-                        className={`w-full h-full rounded-[14px] flex items-center justify-center ${
-                          theme === 'dark' ? 'bg-[#0b0f19]' : 'bg-white'
-                        }`}
-                      >
-                        <Icon className={`w-5 h-5 ${card.iconColor} transition-transform group-hover:scale-110`} />
-                      </div>
+                      <Icon className={`w-5 h-5 ${card.iconColor}`} />
                     </div>
-                    <span className={`text-[10px] font-mono-code uppercase font-semibold px-2.5 py-1 rounded-lg border shadow-sm shrink-0 ${
-                      theme === 'dark' ? card.badgeColorDark : card.badgeColorLight
-                    }`}>
-                      {card.badge}
-                    </span>
                   </div>
 
                   {/* Card Title */}
@@ -171,18 +160,13 @@ export const PrivacyAtAGlance: React.FC<PrivacyAtAGlanceProps> = ({ theme }) => 
                   </p>
                 </div>
 
-                {/* Learn More Interactive Button */}
-                <div className={`pt-5 mt-4 border-t flex items-center justify-between ${
+                {/* Learn More Interactive Link */}
+                <div className={`pt-4 mt-4 border-t flex items-center justify-between ${
                   theme === 'dark' ? 'border-white/10' : 'border-slate-100'
                 }`}>
                   <span className={`text-xs font-semibold ${card.iconColor} group-hover:underline transition-all flex items-center gap-1.5`}>
                     <span>Learn More</span>
                     <ArrowUpRight className="w-3.5 h-3.5 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                  </span>
-                  <span className={`text-[10px] font-mono-code font-bold opacity-70 group-hover:opacity-100 transition-opacity ${
-                    theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
-                  }`}>
-                    Section 0{card.id}
                   </span>
                 </div>
               </div>
