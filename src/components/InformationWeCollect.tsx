@@ -63,11 +63,13 @@ export const InformationWeCollect: React.FC<InformationWeCollectProps> = ({ them
         <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12 space-y-3">
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
             <span className={theme === 'dark' ? 'text-slate-100' : 'text-slate-900'}>Information We </span>
-            <span className="bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 bg-clip-text text-transparent">
+            <span className={`bg-gradient-to-r ${
+              theme === 'dark' ? 'from-purple-400 via-pink-400 to-indigo-400' : 'from-purple-700 via-pink-600 to-indigo-600'
+            } bg-clip-text text-transparent`}>
               Collect
             </span>
           </h2>
-          <p className={`text-base sm:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+          <p className={`text-base sm:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>
             We only collect what is necessary to authenticate you and keep your account safe.
           </p>
         </div>
@@ -118,7 +120,7 @@ export const InformationWeCollect: React.FC<InformationWeCollectProps> = ({ them
                   {/* Purpose Paragraph */}
                   <p
                     className={`text-sm leading-relaxed mb-5 ${
-                      theme === 'dark' ? 'text-slate-300' : 'text-slate-600'
+                      theme === 'dark' ? 'text-slate-200' : 'text-slate-700'
                     }`}
                   >
                     {card.purpose}
@@ -129,7 +131,7 @@ export const InformationWeCollect: React.FC<InformationWeCollectProps> = ({ them
                     {card.features.map((feat, idx) => (
                       <div key={idx} className="flex items-start gap-2 text-xs sm:text-sm">
                         <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                        <span className={theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}>
+                        <span className={theme === 'dark' ? 'text-slate-200' : 'text-slate-800'}>
                           {feat}
                         </span>
                       </div>
@@ -141,7 +143,7 @@ export const InformationWeCollect: React.FC<InformationWeCollectProps> = ({ them
                 <div className={`pt-4 border-t flex items-center justify-between text-xs ${
                   theme === 'dark' ? 'border-white/10' : 'border-slate-100'
                 }`}>
-                  <span className={`text-[11px] ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                  <span className={`text-[11px] ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
                     Security Standard:
                   </span>
                   <span className="text-emerald-600 dark:text-emerald-400 font-semibold text-xs flex items-center gap-1">

@@ -26,11 +26,13 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ theme }) => {
         <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-14 space-y-3">
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
             <span className={theme === 'dark' ? 'text-slate-100' : 'text-slate-900'}>Frequently Asked </span>
-            <span className="bg-gradient-to-r from-pink-500 via-purple-400 to-indigo-500 bg-clip-text text-transparent">
+            <span className={`bg-gradient-to-r ${
+              theme === 'dark' ? 'from-pink-500 via-purple-400 to-indigo-500' : 'from-pink-700 via-purple-700 to-indigo-700'
+            } bg-clip-text text-transparent`}>
               Questions
             </span>
           </h2>
-          <p className={`text-base sm:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+          <p className={`text-base sm:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>
             Answers to common privacy, encryption, and account questions.
           </p>
         </div>
@@ -84,12 +86,12 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ theme }) => {
                   <div
                     className={`px-4 sm:px-6 pb-5 sm:pb-6 pt-2 border-t text-sm leading-relaxed animate-fadeIn ${
                       theme === 'dark'
-                        ? 'border-white/10 text-slate-300 bg-black/20'
-                        : 'border-slate-100 text-slate-700 bg-pink-50/20'
+                        ? 'border-white/10 text-slate-200 bg-black/20'
+                        : 'border-slate-100 text-slate-800 bg-pink-50/20'
                     }`}
                   >
                     <p className={`leading-relaxed pl-4 sm:pl-6 border-l-2 text-xs sm:text-sm ${
-                      theme === 'dark' ? 'border-pink-500/40 text-slate-300' : 'border-pink-400 text-slate-700'
+                      theme === 'dark' ? 'border-pink-500/40 text-slate-200' : 'border-pink-400 text-slate-800'
                     }`}>
                       {item.answer}
                     </p>

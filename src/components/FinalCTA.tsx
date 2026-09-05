@@ -46,7 +46,7 @@ export const FinalCTA: React.FC<FinalCTAProps> = ({ theme, onExploreClick, onOpe
             {/* Description */}
             <p
               className={`text-base sm:text-lg leading-relaxed ${
-                theme === 'dark' ? 'text-slate-300' : 'text-slate-600'
+                theme === 'dark' ? 'text-slate-200' : 'text-slate-700'
               }`}
             >
               Chat, share, and connect with total control over your personal privacy.

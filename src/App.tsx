@@ -14,6 +14,7 @@ import { ConnectWithIndiChat } from './components/ConnectWithIndiChat';
 import { FinalCTA } from './components/FinalCTA';
 import { Footer } from './components/Footer';
 import { Modals } from './components/Modals';
+import { LanguageModal } from './components/LanguageModal';
 
 // Auth Modals & Admin Views
 import { UserLoginModal } from './components/UserLoginModal';
@@ -25,9 +26,38 @@ import { authStorage } from './services/api';
 
 type AppView = 'public' | 'admin-login' | 'admin-dashboard';
 
+// Helper to detect user's device system theme preference
+const getSystemTheme = (): ThemeMode => {
+  if (typeof window !== 'undefined' && window.matchMedia) {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  return 'dark';
+};
+
 export default function App() {
-  const [theme, setTheme] = useState<ThemeMode>('dark');
+  const [theme, setTheme] = useState<ThemeMode>(getSystemTheme);
   const [activeSection, setActiveSection] = useState<string>('hero');
+
+  // Automatically detect and react to device light/dark mode changes
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    setTheme(mediaQuery.matches ? 'dark' : 'light');
+
+    const handleSystemThemeChange = (e: MediaQueryListEvent) => {
+      setTheme(e.matches ? 'dark' : 'light');
+    };
+
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', handleSystemThemeChange);
+      return () => mediaQuery.removeEventListener('change', handleSystemThemeChange);
+    } else {
+      // Fallback for older browsers
+      mediaQuery.addListener(handleSystemThemeChange);
+      return () => mediaQuery.removeListener(handleSystemThemeChange);
+    }
+  }, []);
 
   // Navigation & Authentication View State
   const [currentView, setCurrentView] = useState<AppView>('public');
@@ -75,17 +105,14 @@ export default function App() {
     return () => window.removeEventListener('popstate', handleUrlRouting);
   }, []);
 
-  // Toggle dark/light mode
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
-  };
-
-  // Synchronize body background color with theme
+  // Synchronize document & body background color with theme
   useEffect(() => {
     if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
       document.body.className =
         'bg-[#07090e] text-slate-100 antialiased selection:bg-indigo-500 selection:text-white transition-colors duration-300';
     } else {
+      document.documentElement.classList.remove('dark');
       document.body.className =
         'bg-[#f8fafc] text-slate-800 antialiased selection:bg-indigo-500 selection:text-white transition-colors duration-300';
     }
@@ -167,7 +194,6 @@ export default function App() {
     return (
       <AdminDashboard
         theme={theme}
-        onToggleTheme={toggleTheme}
         onNavigateHome={navigateToPublicHome}
         onAdminLogout={() => {
           authStorage.clearAdminToken();
@@ -220,7 +246,6 @@ export default function App() {
       {/* 1. Sticky Navigation Bar with 3-Option Hamburger Menu */}
       <Navbar
         theme={theme}
-        toggleTheme={toggleTheme}
         activeSection={activeSection}
         onOpenLogin={() => setShowUserLoginModal(true)}
         onOpenRegister={() => setShowUserRegisterModal(true)}
@@ -323,6 +348,9 @@ export default function App() {
         isOpen={showInstallApkModal}
         onClose={() => setShowInstallApkModal(false)}
       />
+
+      {/* Multilingual Language Modal (All Indian & Foreign Languages) */}
+      <LanguageModal theme={theme} />
     </div>
   );
 }

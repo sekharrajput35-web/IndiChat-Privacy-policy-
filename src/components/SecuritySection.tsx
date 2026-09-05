@@ -140,11 +140,13 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({ theme, onOpenS
         <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
             <span className={theme === 'dark' ? 'text-slate-100' : 'text-slate-900'}>Security in Every </span>
-            <span className="bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400 bg-clip-text text-transparent">
+            <span className={`bg-gradient-to-r ${
+              theme === 'dark' ? 'from-indigo-400 via-purple-300 to-pink-400' : 'from-indigo-700 via-purple-700 to-pink-600'
+            } bg-clip-text text-transparent`}>
               Connection
             </span>
           </h2>
-          <p className={`text-base sm:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+          <p className={`text-base sm:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>
             Robust technical safeguards designed to keep your personal messages, media, and account data safe.
           </p>
         </div>
@@ -210,7 +212,7 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({ theme, onOpenS
                     {node.label}
                   </h4>
                   <p className={`text-xs mb-3 leading-relaxed ${
-                    theme === 'dark' ? 'text-slate-400' : 'text-slate-600'
+                    theme === 'dark' ? 'text-slate-300' : 'text-slate-700'
                   }`}>
                     {node.desc}
                   </p>
@@ -283,7 +285,7 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({ theme, onOpenS
                   {/* Short Description */}
                   <p
                     className={`text-sm leading-relaxed mb-4 ${
-                      theme === 'dark' ? 'text-slate-300' : 'text-slate-600'
+                      theme === 'dark' ? 'text-slate-200' : 'text-slate-700'
                     }`}
                   >
                     {card.shortDesc}

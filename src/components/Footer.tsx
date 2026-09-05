@@ -3,6 +3,7 @@ import { Shield, Lock, Heart, Mail, ExternalLink, ArrowUp, ShieldCheck, Phone, S
 import { ThemeMode } from '../types';
 import { usePortal } from '../context/PortalContext';
 import { BrandLogo } from './BrandLogo';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 interface FooterProps {
   theme: ThemeMode;
@@ -35,8 +36,8 @@ export const Footer: React.FC<FooterProps> = ({ theme, onOpenTerms, onOpenContac
       id="indichat-footer"
       className={`relative pt-16 pb-12 border-t transition-colors duration-300 overflow-hidden ${
         theme === 'dark'
-          ? 'bg-[#05070c] border-white/10 text-slate-400'
-          : 'bg-gradient-to-b from-slate-50 to-indigo-50/30 border-slate-200 text-slate-600'
+          ? 'bg-[#05070c] border-white/10 text-slate-300'
+          : 'bg-gradient-to-b from-slate-50 to-indigo-50/30 border-slate-200 text-slate-700'
       }`}
     >
       {/* Ambient subtle glow */}
@@ -51,7 +52,7 @@ export const Footer: React.FC<FooterProps> = ({ theme, onOpenTerms, onOpenContac
             <BrandLogo size="lg" showTagline={false} />
 
             <p className={`text-sm leading-relaxed max-w-md ${
-              theme === 'dark' ? 'text-slate-300' : 'text-slate-600'
+              theme === 'dark' ? 'text-slate-200' : 'text-slate-700'
             }`}>
               IndiChat — Secure communication, content, and connection built with privacy by design.
             </p>
@@ -152,9 +153,14 @@ export const Footer: React.FC<FooterProps> = ({ theme, onOpenTerms, onOpenContac
                 </button>
               </li>
               {contactInfo.privacyEmail && (
-                <li className="text-xs font-mono-code text-slate-400">
-                  <span className="block text-[10px] uppercase text-slate-500">Official Privacy DPO:</span>
-                  <a href={`mailto:${contactInfo.privacyEmail}`} className="hover:text-indigo-400 transition-colors">
+                <li className="text-xs font-mono-code">
+                  <span className={`block text-[10px] uppercase ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
+                    Official Privacy DPO:
+                  </span>
+                  <a
+                    href={`mailto:${contactInfo.privacyEmail}`}
+                    className={`transition-colors ${theme === 'dark' ? 'text-slate-300 hover:text-indigo-400' : 'text-slate-700 hover:text-indigo-600'}`}
+                  >
                     {contactInfo.privacyEmail}
                   </a>
                 </li>
@@ -164,7 +170,9 @@ export const Footer: React.FC<FooterProps> = ({ theme, onOpenTerms, onOpenContac
                   <button
                     id="footer-admin-login-link"
                     onClick={onOpenAdminLogin}
-                    className="text-xs text-slate-500 hover:text-indigo-400 flex items-center gap-1 transition-colors"
+                    className={`text-xs flex items-center gap-1 transition-colors ${
+                      theme === 'dark' ? 'text-slate-400 hover:text-indigo-400' : 'text-slate-600 hover:text-indigo-600'
+                    }`}
                   >
                     <ShieldCheck className="w-3 h-3" />
                     <span>Administrator Gateway</span>
@@ -175,8 +183,15 @@ export const Footer: React.FC<FooterProps> = ({ theme, onOpenTerms, onOpenContac
           </div>
         </div>
 
+        {/* Language Switcher Component */}
+        <div className="pt-8 pb-2">
+          <LanguageSwitcher theme={theme} />
+        </div>
+
         {/* Bottom copyright bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+        <div className={`pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs ${
+          theme === 'dark' ? 'text-slate-400' : 'text-slate-600'
+        }`}>
           <div className="text-center sm:text-left">
             © 2026 IndiChat. All rights reserved.
           </div>

@@ -7,8 +7,6 @@ import {
   Lock,
   Menu,
   X,
-  Sun,
-  Moon,
   LogIn,
   UserPlus,
   ShieldCheck,
@@ -24,7 +22,6 @@ import {
 
 interface NavbarProps {
   theme: ThemeMode;
-  toggleTheme: () => void;
   activeSection: string;
   onOpenLogin: () => void;
   onOpenRegister: () => void;
@@ -34,7 +31,6 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({
   theme,
-  toggleTheme,
   activeSection,
   onOpenLogin,
   onOpenRegister,
@@ -153,21 +149,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* RIGHT: Action Controls & Three-Line Hamburger Button */}
             <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-              {/* Quick Theme Toggle */}
-              <button
-                id="theme-toggle-button"
-                onClick={toggleTheme}
-                className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl border transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 flex items-center justify-center ${
-                  theme === 'dark'
-                    ? 'border-white/10 bg-white/5 text-amber-300 hover:bg-white/10 hover:text-amber-200'
-                    : 'border-slate-300 bg-slate-100 text-indigo-700 hover:bg-slate-200'
-                }`}
-                title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-                aria-label="Toggle theme"
-              >
-                {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-              </button>
-
               {/* Desktop quick login/register buttons for convenience */}
               <div className="hidden sm:flex items-center gap-2">
                 {currentUser ? (

@@ -86,11 +86,13 @@ export const PrivacyPolicyAccordion: React.FC<PrivacyPolicyAccordionProps> = ({ 
           </div>
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
             <span className={theme === 'dark' ? 'text-slate-100' : 'text-slate-900'}>IndiChat Privacy </span>
-            <span className="bg-gradient-to-r from-indigo-500 via-purple-400 to-pink-500 bg-clip-text text-transparent">
+            <span className={`bg-gradient-to-r ${
+              theme === 'dark' ? 'from-indigo-500 via-purple-400 to-pink-500' : 'from-indigo-700 via-purple-700 to-pink-600'
+            } bg-clip-text text-transparent`}>
               Policy
             </span>
           </h2>
-          <p className={`text-base sm:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+          <p className={`text-base sm:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>
             IndiChat is a communication and digital services platform designed with privacy, security and user control as core principles.
           </p>
           <div className={`inline-flex flex-wrap items-center justify-center gap-2 text-xs font-mono-code px-4 py-1.5 rounded-full border ${
@@ -124,10 +126,10 @@ export const PrivacyPolicyAccordion: React.FC<PrivacyPolicyAccordionProps> = ({ 
               }`}>
                 Preamble & Legal Acknowledgment
               </h3>
-              <p className={theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}>
+              <p className={theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}>
                 IndiChat is a communication and digital services platform designed with privacy, security and user control as core principles.
               </p>
-              <p className={theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}>
+              <p className={theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}>
                 This Privacy Policy explains what information IndiChat processes, why it is processed, how it is protected, and what controls are available to you.
               </p>
               <p className={`font-semibold ${theme === 'dark' ? 'text-indigo-300' : 'text-indigo-700'}`}>
@@ -223,7 +225,7 @@ export const PrivacyPolicyAccordion: React.FC<PrivacyPolicyAccordionProps> = ({ 
                       }`}>
                         {sec.number}. {sec.title}
                       </h3>
-                      <p className={`text-xs mt-0.5 line-clamp-1 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                      <p className={`text-xs mt-0.5 line-clamp-1 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
                         {sec.summary}
                       </p>
                     </div>
@@ -248,8 +250,8 @@ export const PrivacyPolicyAccordion: React.FC<PrivacyPolicyAccordionProps> = ({ 
                   <div
                     className={`px-4 sm:px-6 pb-5 sm:pb-6 pt-2 border-t text-sm leading-relaxed space-y-4 animate-fadeIn ${
                       theme === 'dark'
-                        ? 'border-white/10 text-slate-300 bg-black/20'
-                        : 'border-slate-100 text-slate-700 bg-indigo-50/20'
+                        ? 'border-white/10 text-slate-200 bg-black/20'
+                        : 'border-slate-100 text-slate-800 bg-indigo-50/20'
                     }`}
                   >
                     {sec.content.map((paragraph, idx) => (
@@ -257,7 +259,7 @@ export const PrivacyPolicyAccordion: React.FC<PrivacyPolicyAccordionProps> = ({ 
                         key={idx}
                         className={`leading-relaxed text-xs sm:text-sm ${
                           paragraph.startsWith('•')
-                            ? 'pl-3 font-medium text-slate-200 dark:text-slate-200'
+                            ? theme === 'dark' ? 'pl-3 font-medium text-slate-100' : 'pl-3 font-medium text-slate-900'
                             : ''
                         }`}
                       >
@@ -286,7 +288,7 @@ export const PrivacyPolicyAccordion: React.FC<PrivacyPolicyAccordionProps> = ({ 
                               <span>{sub.title}</span>
                             </h4>
                             <p className={`text-xs leading-relaxed ${
-                              theme === 'dark' ? 'text-slate-400' : 'text-slate-600'
+                              theme === 'dark' ? 'text-slate-300' : 'text-slate-700'
                             }`}>
                               {sub.body}
                             </p>
@@ -314,66 +316,66 @@ export const PrivacyPolicyAccordion: React.FC<PrivacyPolicyAccordionProps> = ({ 
                           <div className={`p-3 rounded-xl border ${
                             theme === 'dark' ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'
                           }`}>
-                            <div className="flex items-center gap-2 text-xs font-semibold text-emerald-400 mb-1">
+                            <div className="flex items-center gap-2 text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">
                               <Smartphone className="w-3.5 h-3.5" />
                               <span>Normal SMS ➔ Local Device ➔ Local DB</span>
                             </div>
-                            <p className="text-[11px] text-slate-400">
+                            <p className={`text-[11px] ${theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}`}>
                               Stored exclusively in local Android database under user control. Never uploaded by default.
                             </p>
                           </div>
                           <div className={`p-3 rounded-xl border ${
                             theme === 'dark' ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'
                           }`}>
-                            <div className="flex items-center gap-2 text-xs font-semibold text-indigo-400 mb-1">
+                            <div className="flex items-center gap-2 text-xs font-semibold text-indigo-700 dark:text-indigo-400 mb-1">
                               <Server className="w-3.5 h-3.5" />
                               <span>Normal SMS ➔ IndiChat Server</span>
                             </div>
-                            <p className="text-[11px] text-slate-400">
+                            <p className={`text-[11px] ${theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}`}>
                               Zero default server upload. SMS traffic bypasses cloud synchronization servers entirely.
                             </p>
                           </div>
                           <div className={`p-3 rounded-xl border ${
                             theme === 'dark' ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'
                           }`}>
-                            <div className="flex items-center gap-2 text-xs font-semibold text-purple-400 mb-1">
+                            <div className="flex items-center gap-2 text-xs font-semibold text-purple-700 dark:text-purple-400 mb-1">
                               <Bot className="w-3.5 h-3.5" />
                               <span>Normal SMS ➔ Online AI</span>
                             </div>
-                            <p className="text-[11px] text-slate-400">
+                            <p className={`text-[11px] ${theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}`}>
                               Not shared with online AI services by default. Clear disclosures required for any online analysis.
                             </p>
                           </div>
                           <div className={`p-3 rounded-xl border ${
                             theme === 'dark' ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'
                           }`}>
-                            <div className="flex items-center gap-2 text-xs font-semibold text-blue-400 mb-1">
+                            <div className="flex items-center gap-2 text-xs font-semibold text-blue-700 dark:text-blue-400 mb-1">
                               <ShieldCheck className="w-3.5 h-3.5" />
                               <span>Private Data ➔ Security & Access</span>
                             </div>
-                            <p className="text-[11px] text-slate-400">
+                            <p className={`text-[11px] ${theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}`}>
                               Strict cryptographic protection in transit (TLS 1.3) and salted derivation at rest.
                             </p>
                           </div>
                           <div className={`p-3 rounded-xl border ${
                             theme === 'dark' ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'
                           }`}>
-                            <div className="flex items-center gap-2 text-xs font-semibold text-rose-400 mb-1">
+                            <div className="flex items-center gap-2 text-xs font-semibold text-rose-700 dark:text-rose-400 mb-1">
                               <ShieldAlert className="w-3.5 h-3.5" />
                               <span>Administrator Boundary</span>
                             </div>
-                            <p className="text-[11px] text-slate-400">
+                            <p className={`text-[11px] ${theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}`}>
                               No unrestricted access. Normal administrative interfaces cannot view local SMS or E2EE content.
                             </p>
                           </div>
                           <div className={`p-3 rounded-xl border ${
                             theme === 'dark' ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'
                           }`}>
-                            <div className="flex items-center gap-2 text-xs font-semibold text-amber-400 mb-1">
+                            <div className="flex items-center gap-2 text-xs font-semibold text-amber-700 dark:text-amber-400 mb-1">
                               <Sliders className="w-3.5 h-3.5" />
                               <span>User Autonomy</span>
                             </div>
-                            <p className="text-[11px] text-slate-400">
+                            <p className={`text-[11px] ${theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}`}>
                               Direct control over app lock, permissions, profile visibility, biometrics, and data deletion.
                             </p>
                           </div>

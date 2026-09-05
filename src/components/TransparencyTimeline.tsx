@@ -52,11 +52,13 @@ export const TransparencyTimeline: React.FC<TransparencyTimelineProps> = ({ them
         <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-14 space-y-3">
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
             <span className={theme === 'dark' ? 'text-slate-100' : 'text-slate-900'}>Clear. Simple. </span>
-            <span className="bg-gradient-to-r from-emerald-500 via-teal-400 to-indigo-500 bg-clip-text text-transparent">
+            <span className={`bg-gradient-to-r ${
+              theme === 'dark' ? 'from-emerald-500 via-teal-400 to-indigo-500' : 'from-emerald-700 via-teal-600 to-indigo-700'
+            } bg-clip-text text-transparent`}>
               Transparent.
             </span>
           </h2>
-          <p className={`text-base sm:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+          <p className={`text-base sm:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>
             How your information is protected at every step of using IndiChat.
           </p>
         </div>
@@ -123,7 +125,7 @@ export const TransparencyTimeline: React.FC<TransparencyTimelineProps> = ({ them
                       </h3>
                       <p
                         className={`text-xs sm:text-sm mt-1 leading-relaxed ${
-                          theme === 'dark' ? 'text-slate-300' : 'text-slate-600'
+                          theme === 'dark' ? 'text-slate-200' : 'text-slate-700'
                         }`}
                       >
                         {item.shortDesc}
@@ -145,14 +147,14 @@ export const TransparencyTimeline: React.FC<TransparencyTimelineProps> = ({ them
                     <div
                       className={`px-4 sm:px-6 pb-5 sm:pb-6 pt-2 border-t text-sm leading-relaxed animate-fadeIn ${
                         theme === 'dark'
-                          ? 'border-white/10 text-slate-300 bg-black/20'
-                          : 'border-slate-100 text-slate-700 bg-indigo-50/30'
+                          ? 'border-white/10 text-slate-200 bg-black/20'
+                          : 'border-slate-100 text-slate-800 bg-indigo-50/30'
                       }`}
                     >
                       <div className={`p-4 rounded-xl sm:rounded-2xl border ${
                         theme === 'dark'
-                          ? 'border-indigo-500/20 bg-indigo-500/10 text-slate-300'
-                          : 'border-indigo-200 bg-white shadow-sm text-slate-700'
+                          ? 'border-indigo-500/20 bg-indigo-500/10 text-slate-200'
+                          : 'border-indigo-200 bg-white shadow-sm text-slate-800'
                       }`}>
                         <p className="text-xs sm:text-sm leading-relaxed">
                           {item.detailedInfo}

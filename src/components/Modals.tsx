@@ -167,7 +167,7 @@ export const Modals: React.FC<ModalsProps> = ({
                   {securityModalItem.highlights.map((h, i) => (
                     <div key={i} className="flex items-start gap-2 text-xs">
                       <div className="w-1.5 h-1.5 rounded-full bg-pink-400 mt-1.5 flex-shrink-0" />
-                      <span className={theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}>
+                      <span className={theme === 'dark' ? 'text-slate-200' : 'text-slate-800'}>
                         {h}
                       </span>
                     </div>
@@ -195,7 +195,7 @@ export const Modals: React.FC<ModalsProps> = ({
               <button
                 onClick={onCloseSecurityModal}
                 className={`w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs font-semibold border transition-colors min-h-[44px] ${
-                  theme === 'dark' ? 'border-white/10 hover:bg-white/10 text-slate-300' : 'border-slate-300 hover:bg-slate-100 text-slate-700'
+                  theme === 'dark' ? 'border-white/10 hover:bg-white/10 text-slate-200' : 'border-slate-300 hover:bg-slate-100 text-slate-700'
                 }`}
               >
                 Close Window
@@ -256,7 +256,7 @@ export const Modals: React.FC<ModalsProps> = ({
             </p>
 
             <p className={`text-xs sm:text-sm max-w-md mx-auto mb-5 sm:mb-6 leading-relaxed ${
-              theme === 'dark' ? 'text-slate-300' : 'text-slate-600'
+              theme === 'dark' ? 'text-slate-200' : 'text-slate-700'
             }`}>
               IndiChat is currently in final private preview engineering. Get notified the moment the next-generation
               super app launches on Android, iOS, and Web.
@@ -370,7 +370,7 @@ export const Modals: React.FC<ModalsProps> = ({
             </div>
 
             <div className={`space-y-4 text-xs sm:text-sm leading-relaxed ${
-              theme === 'dark' ? 'text-slate-300' : 'text-slate-600'
+              theme === 'dark' ? 'text-slate-200' : 'text-slate-700'
             }`}>
               <p>
                 By using IndiChat ("the Platform"), users agree to maintain authentic community interactions, respect
@@ -382,7 +382,7 @@ export const Modals: React.FC<ModalsProps> = ({
                 <h4 className={`font-bold ${theme === 'dark' ? 'text-slate-100' : 'text-slate-900'}`}>
                   1. Account Responsibility
                 </h4>
-                <p className={`text-xs ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
+                <p className={`text-xs ${theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}`}>
                   Users are responsible for safeguarding their login credentials and the activities that occur under their
                   account.
                 </p>
@@ -393,7 +393,7 @@ export const Modals: React.FC<ModalsProps> = ({
                 <h4 className={`font-bold ${theme === 'dark' ? 'text-slate-100' : 'text-slate-900'}`}>
                   2. Prohibited Content & Conduct
                 </h4>
-                <p className={`text-xs ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
+                <p className={`text-xs ${theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}`}>
                   Harassment, non-consensual content sharing, automated abuse, fraudulent marketplace listings, and
                   unauthorized data extraction are strictly prohibited.
                 </p>
@@ -404,7 +404,7 @@ export const Modals: React.FC<ModalsProps> = ({
                 <h4 className={`font-bold ${theme === 'dark' ? 'text-slate-100' : 'text-slate-900'}`}>
                   3. Privacy Enforcement
                 </h4>
-                <p className={`text-xs ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
+                <p className={`text-xs ${theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}`}>
                   Private content visibility rules are strictly respected. Users may not attempt to circumvent or reverse
                   engineer audience access controls.
                 </p>
@@ -462,7 +462,7 @@ export const Modals: React.FC<ModalsProps> = ({
             </div>
 
             <div className={`space-y-4 text-xs sm:text-sm leading-relaxed ${
-              theme === 'dark' ? 'text-slate-300' : 'text-slate-600'
+              theme === 'dark' ? 'text-slate-200' : 'text-slate-700'
             }`}>
               <p>
                 Our dedicated Data Protection and Security Team reviews all verified inquiries regarding account data,
@@ -501,12 +501,14 @@ export const Modals: React.FC<ModalsProps> = ({
                     theme === 'dark' ? 'border-white/10 bg-white/5' : 'border-slate-200 bg-slate-50'
                   }`}>
                     <div>
-                      <span className="text-slate-400 block text-[11px]">User Support Helpdesk:</span>
-                      <span className="font-mono-code font-bold text-indigo-400">{contactInfo.supportEmail}</span>
+                      <span className={`block text-[11px] ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+                        User Support Helpdesk:
+                      </span>
+                      <span className="font-mono-code font-bold text-indigo-600 dark:text-indigo-400">{contactInfo.supportEmail}</span>
                     </div>
                     <a
                       href={`mailto:${contactInfo.supportEmail}`}
-                      className="text-xs text-indigo-400 hover:underline font-semibold"
+                      className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-semibold"
                     >
                       Send Mail
                     </a>
@@ -518,12 +520,14 @@ export const Modals: React.FC<ModalsProps> = ({
                     theme === 'dark' ? 'border-white/10 bg-white/5' : 'border-slate-200 bg-slate-50'
                   }`}>
                     <div>
-                      <span className="text-slate-400 block text-[11px]">Direct Telephone Assistance:</span>
-                      <span className="font-mono-code font-bold text-emerald-400">{contactInfo.phoneNumber}</span>
+                      <span className={`block text-[11px] ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+                        Direct Telephone Assistance:
+                      </span>
+                      <span className="font-mono-code font-bold text-emerald-700 dark:text-emerald-400">{contactInfo.phoneNumber}</span>
                     </div>
                     <a
                       href={`tel:${contactInfo.phoneNumber}`}
-                      className="text-xs text-emerald-400 hover:underline font-semibold"
+                      className="text-xs text-emerald-700 dark:text-emerald-400 hover:underline font-semibold"
                     >
                       Call
                     </a>
@@ -532,7 +536,7 @@ export const Modals: React.FC<ModalsProps> = ({
               </div>
 
               <div className={`text-xs leading-relaxed ${
-                theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
+                theme === 'dark' ? 'text-slate-300' : 'text-slate-600'
               }`}>
                 <p>Standard response turnaround: Within 24-48 business hours.</p>
               </div>

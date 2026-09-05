@@ -63,11 +63,13 @@ export const PrivacyCenterDashboard: React.FC<PrivacyCenterDashboardProps> = ({ 
         <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
             <span className={theme === 'dark' ? 'text-slate-100' : 'text-slate-900'}>Your Privacy </span>
-            <span className="bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400 bg-clip-text text-transparent">
+            <span className={`bg-gradient-to-r ${
+              theme === 'dark' ? 'from-indigo-400 via-purple-300 to-pink-400' : 'from-indigo-700 via-purple-700 to-pink-600'
+            } bg-clip-text text-transparent`}>
               Center
             </span>
           </h2>
-          <p className={`text-base sm:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+          <p className={`text-base sm:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>
             Configure your preferences, inspect account defenses, and manage your personal data.
           </p>
         </div>
@@ -104,11 +106,11 @@ export const PrivacyCenterDashboard: React.FC<PrivacyCenterDashboardProps> = ({ 
               }`}>
                 Privacy Settings
               </h3>
-              <p className={`text-sm leading-relaxed mb-4 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+              <p className={`text-sm leading-relaxed mb-4 ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>
                 Control advertising preferences, activity indicators, read receipts, and discoverability.
               </p>
             </div>
-            <div className={`pt-4 border-t flex items-center justify-between text-xs font-semibold text-purple-400 ${
+            <div className={`pt-4 border-t flex items-center justify-between text-xs font-semibold text-purple-600 dark:text-purple-400 ${
               theme === 'dark' ? 'border-white/10' : 'border-slate-100'
             }`}>
               <span>Open settings</span>
@@ -146,11 +148,11 @@ export const PrivacyCenterDashboard: React.FC<PrivacyCenterDashboardProps> = ({ 
               }`}>
                 Account Security
               </h3>
-              <p className={`text-sm leading-relaxed mb-4 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+              <p className={`text-sm leading-relaxed mb-4 ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>
                 Learn about end-to-end encryption, multi-factor verification, and session protections.
               </p>
             </div>
-            <div className={`pt-4 border-t flex items-center justify-between text-xs font-semibold text-indigo-400 ${
+            <div className={`pt-4 border-t flex items-center justify-between text-xs font-semibold text-indigo-600 dark:text-indigo-400 ${
               theme === 'dark' ? 'border-white/10' : 'border-slate-100'
             }`}>
               <span>View security</span>
@@ -188,11 +190,11 @@ export const PrivacyCenterDashboard: React.FC<PrivacyCenterDashboardProps> = ({ 
               }`}>
                 Data Transparency
               </h3>
-              <p className={`text-sm leading-relaxed mb-4 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+              <p className={`text-sm leading-relaxed mb-4 ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>
                 See how your data moves through registration, active usage, and safe storage.
               </p>
             </div>
-            <div className={`pt-4 border-t flex items-center justify-between text-xs font-semibold text-pink-400 ${
+            <div className={`pt-4 border-t flex items-center justify-between text-xs font-semibold text-pink-600 dark:text-pink-400 ${
               theme === 'dark' ? 'border-white/10' : 'border-slate-100'
             }`}>
               <span>View data flow</span>
@@ -230,11 +232,11 @@ export const PrivacyCenterDashboard: React.FC<PrivacyCenterDashboardProps> = ({ 
               }`}>
                 Manage Data & Account
               </h3>
-              <p className={`text-sm leading-relaxed mb-4 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+              <p className={`text-sm leading-relaxed mb-4 ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>
                 Download a copy of your personal data archive, review devices, or request deletion.
               </p>
             </div>
-            <div className={`pt-4 border-t flex items-center justify-between text-xs font-semibold text-emerald-400 ${
+            <div className={`pt-4 border-t flex items-center justify-between text-xs font-semibold text-emerald-700 dark:text-emerald-400 ${
               theme === 'dark' ? 'border-white/10' : 'border-slate-100'
             }`}>
               <span>Manage data</span>
@@ -272,11 +274,11 @@ export const PrivacyCenterDashboard: React.FC<PrivacyCenterDashboardProps> = ({ 
               }`}>
                 Frequently Asked Questions
               </h3>
-              <p className={`text-sm leading-relaxed mb-4 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+              <p className={`text-sm leading-relaxed mb-4 ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>
                 Direct answers to common questions about password encryption, account recovery, and data rights.
               </p>
             </div>
-            <div className={`pt-4 border-t flex items-center justify-between text-xs font-semibold text-cyan-400 ${
+            <div className={`pt-4 border-t flex items-center justify-between text-xs font-semibold text-cyan-700 dark:text-cyan-400 ${
               theme === 'dark' ? 'border-white/10' : 'border-slate-100'
             }`}>
               <span>Read answers</span>

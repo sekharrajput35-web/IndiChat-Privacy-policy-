@@ -23,8 +23,6 @@ import {
   Shield,
   ArrowLeft,
   RefreshCw,
-  Sun,
-  Moon,
   ChevronRight,
   Sparkles,
   Smartphone,
@@ -47,7 +45,6 @@ import { WebsiteSettingsManager } from './AdminDashboard/WebsiteSettingsManager'
 
 interface AdminDashboardProps {
   theme: ThemeMode;
-  onToggleTheme: () => void;
   onNavigateHome: () => void;
   onAdminLogout: () => void;
 }
@@ -67,7 +64,6 @@ type AdminTab =
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   theme,
-  onToggleTheme,
   onNavigateHome,
   onAdminLogout,
 }) => {
@@ -356,22 +352,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               aria-label="Refresh database records"
             >
               <RefreshCw className="w-4 h-4" />
-            </button>
-
-            {/* Theme Toggle */}
-            <button
-              type="button"
-              id="btn-admin-toggle-theme"
-              onClick={onToggleTheme}
-              className={`p-2 rounded-xl border text-xs font-semibold transition-colors ${
-                theme === 'dark'
-                  ? 'border-white/10 hover:bg-white/5 text-amber-400'
-                  : 'border-slate-200 hover:bg-slate-100 text-slate-700'
-              }`}
-              title="Toggle theme mode"
-              aria-label="Toggle theme mode"
-            >
-              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
 
             {/* View Live Public Site */}

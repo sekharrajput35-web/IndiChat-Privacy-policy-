@@ -38,11 +38,13 @@ export const PrivacyControlsDemo: React.FC<PrivacyControlsDemoProps> = ({ theme 
         <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
             <span className={theme === 'dark' ? 'text-slate-100' : 'text-slate-900'}>You Decide Who Sees </span>
-            <span className="bg-gradient-to-r from-pink-400 via-purple-300 to-indigo-400 bg-clip-text text-transparent">
+            <span className={`bg-gradient-to-r ${
+              theme === 'dark' ? 'from-pink-400 via-purple-300 to-indigo-400' : 'from-pink-700 via-purple-700 to-indigo-600'
+            } bg-clip-text text-transparent`}>
               Your Content
             </span>
           </h2>
-          <p className={`text-base sm:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+          <p className={`text-base sm:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>
             Simple privacy controls for your posts, reels, and profile. You choose your audience every time.
           </p>
         </div>
@@ -79,7 +81,7 @@ export const PrivacyControlsDemo: React.FC<PrivacyControlsDemoProps> = ({ theme 
               }`}>
                 Public
               </h3>
-              <p className={`text-xs sm:text-sm leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+              <p className={`text-xs sm:text-sm leading-relaxed ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>
                 Visible to anyone on IndiChat. Recommended for public creators and open discussions.
               </p>
             </div>
@@ -115,7 +117,7 @@ export const PrivacyControlsDemo: React.FC<PrivacyControlsDemoProps> = ({ theme 
               }`}>
                 Private
               </h3>
-              <p className={`text-xs sm:text-sm leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+              <p className={`text-xs sm:text-sm leading-relaxed ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>
                 Only visible to you and people you approve. Hidden from search and public feeds.
               </p>
             </div>
@@ -151,7 +153,7 @@ export const PrivacyControlsDemo: React.FC<PrivacyControlsDemoProps> = ({ theme 
               }`}>
                 Custom
               </h3>
-              <p className={`text-xs sm:text-sm leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+              <p className={`text-xs sm:text-sm leading-relaxed ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>
                 Fine-tune who can view, comment, share, or direct-message your content.
               </p>
             </div>
@@ -326,7 +328,9 @@ export const PrivacyControlsDemo: React.FC<PrivacyControlsDemoProps> = ({ theme 
                     theme === 'dark' ? 'bg-[#0e1322] border-white/10' : 'bg-slate-50 border-slate-200'
                   }`}
                 >
-                  <label className="block text-xs font-mono-code font-bold uppercase text-indigo-300 mb-2 flex items-center gap-1.5">
+                  <label className={`block text-xs font-mono-code font-bold uppercase mb-2 flex items-center gap-1.5 ${
+                    theme === 'dark' ? 'text-indigo-300' : 'text-indigo-700'
+                  }`}>
                     <Eye className="w-3.5 h-3.5" /> Who can view?
                   </label>
                   <select
@@ -349,7 +353,7 @@ export const PrivacyControlsDemo: React.FC<PrivacyControlsDemoProps> = ({ theme 
                     <option value="circle">Selected Private Circle</option>
                     <option value="only_me">Only Me (Vault)</option>
                   </select>
-                  <p className="text-[11px] text-slate-400 mt-2">
+                  <p className={`text-[11px] mt-2 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
                     Filters visibility across reels, posts, and live feeds.
                   </p>
                 </div>
@@ -360,7 +364,9 @@ export const PrivacyControlsDemo: React.FC<PrivacyControlsDemoProps> = ({ theme 
                     theme === 'dark' ? 'bg-[#0e1322] border-white/10' : 'bg-slate-50 border-slate-200'
                   }`}
                 >
-                  <label className="block text-xs font-mono-code font-bold uppercase text-purple-300 mb-2 flex items-center gap-1.5">
+                  <label className={`block text-xs font-mono-code font-bold uppercase mb-2 flex items-center gap-1.5 ${
+                    theme === 'dark' ? 'text-purple-300' : 'text-purple-700'
+                  }`}>
                     <Heart className="w-3.5 h-3.5" /> Who can interact?
                   </label>
                   <select
@@ -382,7 +388,7 @@ export const PrivacyControlsDemo: React.FC<PrivacyControlsDemoProps> = ({ theme 
                     <option value="reactions_only">Reactions Only (No Comments)</option>
                     <option value="disabled">Disabled Completely</option>
                   </select>
-                  <p className="text-[11px] text-slate-400 mt-2">
+                  <p className={`text-[11px] mt-2 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
                     Controls comment threads and community engagement.
                   </p>
                 </div>
@@ -393,7 +399,9 @@ export const PrivacyControlsDemo: React.FC<PrivacyControlsDemoProps> = ({ theme 
                     theme === 'dark' ? 'bg-[#0e1322] border-white/10' : 'bg-slate-50 border-slate-200'
                   }`}
                 >
-                  <label className="block text-xs font-mono-code font-bold uppercase text-pink-300 mb-2 flex items-center gap-1.5">
+                  <label className={`block text-xs font-mono-code font-bold uppercase mb-2 flex items-center gap-1.5 ${
+                    theme === 'dark' ? 'text-pink-300' : 'text-pink-700'
+                  }`}>
                     <MessageSquare className="w-3.5 h-3.5" /> Who can message?
                   </label>
                   <select
@@ -415,7 +423,7 @@ export const PrivacyControlsDemo: React.FC<PrivacyControlsDemoProps> = ({ theme 
                     <option value="verified_contacts">Verified Phone Contacts Only</option>
                     <option value="none">No Direct Messages</option>
                   </select>
-                  <p className="text-[11px] text-slate-400 mt-2">
+                  <p className={`text-[11px] mt-2 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
                     Prevents spam requests and unsolicited chats.
                   </p>
                 </div>
@@ -426,7 +434,9 @@ export const PrivacyControlsDemo: React.FC<PrivacyControlsDemoProps> = ({ theme 
                     theme === 'dark' ? 'bg-[#0e1322] border-white/10' : 'bg-slate-50 border-slate-200'
                   }`}
                 >
-                  <label className="block text-xs font-mono-code font-bold uppercase text-emerald-300 mb-2 flex items-center gap-1.5">
+                  <label className={`block text-xs font-mono-code font-bold uppercase mb-2 flex items-center gap-1.5 ${
+                    theme === 'dark' ? 'text-emerald-300' : 'text-emerald-700'
+                  }`}>
                     <Share2 className="w-3.5 h-3.5" /> Who can share?
                   </label>
                   <select
@@ -447,16 +457,20 @@ export const PrivacyControlsDemo: React.FC<PrivacyControlsDemoProps> = ({ theme 
                     <option value="allow">Allow Resharing to Feeds</option>
                     <option value="disable_forwarding">Disable Forwarding & Saving</option>
                   </select>
-                  <p className="text-[11px] text-slate-400 mt-2">
+                  <p className={`text-[11px] mt-2 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
                     Restricts downloading or redistributing your media.
                   </p>
                 </div>
               </div>
 
               {/* Status footer for custom demo */}
-              <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-400">
+              <div className={`pt-4 border-t flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs ${
+                theme === 'dark' ? 'border-white/10 text-slate-300' : 'border-slate-200 text-slate-600'
+              }`}>
                 <span>Visual Demonstration of IndiChat Privacy Preference Engine</span>
-                <span className="text-emerald-400 font-mono-code">Preferences Instantly Reactive</span>
+                <span className={theme === 'dark' ? 'text-emerald-400 font-mono-code' : 'text-emerald-700 font-mono-code font-semibold'}>
+                  Preferences Instantly Reactive
+                </span>
               </div>
             </div>
           )}
